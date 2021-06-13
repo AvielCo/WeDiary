@@ -1,0 +1,107 @@
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <span style="text-transform: capitalize">
+            {{ authMode }}
+          </span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="closeModal()"
+        ></button>
+      </div>
+      <form
+        class="needs-validation"
+        novalidate
+        #authForm="ngForm"
+        (ngSubmit)="onSubmit(authForm)"
+      >
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="form-group">
+                <div class="form-floating mb-3">
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    placeholder="name@example.com"
+                    name="email"
+                    ngModel
+                    required
+                    email
+                  />
+                  <label for="email">E-Mail</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input
+                    type="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="Password"
+                    name="password"
+                    ngModel
+                    required
+                    minlength="6"
+                  />
+                  <label for="password">Password</label>
+                </div>
+              </div>
+              <a
+                *ngIf="authMode == 'login'; else register"
+                (click)="switchAuthMode()"
+                href="#"
+                >Not registered?</a
+              >
+              <ng-template #register>
+                <a (click)="switchAuthMode()" href="#">Already registered?</a>
+              </ng-template>
+              <div class="col-12"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="modal-footer"
+          [ngClass]="{ 'justify-content-between': authMode === 'login' }"
+        >
+          <div *ngIf="authMode === 'login'">
+            <input type="checkbox" id="remember_me_checkbox" class="me-1" />
+            <label for="remember_me_checkbox">Remember me</label>
+          </div>
+          <div>
+            <button
+              type="button"
+              class="btn btn-secondary me-3"
+              data-bs-dismiss="modal"
+              (click)="closeModal()"
+            >
+              Close
+            </button>
+            <button
+              class="btn btn-primary"
+              type="submit"
+              [disabled]="!authForm.valid"
+            >
+              <span style="text-transform: capitalize">
+                {{ authMode }}
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
