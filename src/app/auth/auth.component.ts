@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
 import { Observable } from 'rxjs';
 import { CloseAuthModal } from '../store/actions/auth.actions';
+import * as fromApp from '../store';
 
 @Component({
   selector: 'app-auth',
@@ -16,11 +17,10 @@ export class AuthComponent implements OnInit {
   authMode: string = 'login';
   private modalElement?: Modal;
 
-  constructor(private store: Store<{ auth: { isModalOpen: boolean } }>) {}
+  constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit(): void {
-    this.authStore = this.store.select('auth');
-    this.authStore.subscribe((value) => {
+    this.store.select('auth').subscribe((value) => {
       const { isModalOpen } = value;
       if (isModalOpen) {
         this.modalElement!.show();
