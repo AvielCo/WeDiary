@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { OpenAuthModal } from '@store/actions/auth.actions';
+import { OpenModal } from '@store/actions/auth.actions';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +14,6 @@ export class HeaderComponent implements OnInit {
 
   openAuthModal() {
     console.log('clicked login');
-    this.store.dispatch(new OpenAuthModal());
+    this.store.dispatch(new OpenModal());
   }
 }

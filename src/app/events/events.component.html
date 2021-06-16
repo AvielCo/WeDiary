@@ -10,7 +10,9 @@
             <h6 class="card-subtitle text-muted mb-2">
               {{ event.date | date }} | {{ event.location }}
             </h6>
-            <button class="btn btn-dark">Guests</button>
+            <button class="btn btn-dark" (click)="openGuestsModal(event)">
+              Guests
+            </button>
           </div>
         </div>
       </div>

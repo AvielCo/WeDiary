@@ -5,10 +5,10 @@
   aria-labelledby="guestsModal"
   aria-hidden="true"
 >
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="guestsModal">
+        <h5 class="modal-title">
           <span> Guests </span>
         </h5>
         <button
@@ -20,6 +20,127 @@
         ></button>
       </div>
       <div class="modal-body">
+        <div
+          *ngIf="isLoading == true || guestsList == undefined"
+          class="d-flex justify-content-center"
+        >
+          <div class="spinner-border m-5" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <div *ngIf="guestsList && guestsList.length == 0">List is empty</div>
+        <div *ngIf="guestsList && guestsList.length > 0">
+          <table
+            class="
+              table table-hover table-bordered table-secondary table-striped
+            "
+          >
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col" class="text-center">How many</th>
+                <th scope="col" class="text-center">Gifted</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let guest of guestsList; let i = index">
+                <th scope="row">{{ i + 1 }}</th>
+                <ng-container
+                  *ngIf="!guest.editable; then unEditable; else editable"
+                ></ng-container>
+                <ng-template #unEditable>
+                  <td>{{ guest.name }}</td>
+                  <td class="text-center">{{ guest.howMany }}</td>
+                  <td class="text-center">{{ guest.howMuch }}</td>
+                  <td
+                    class="d-flex justify-content-center align-content-center"
+                  >
+                    <button
+                      class="btn btn-dark me-1"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="Edit guest"
+                      (click)="toggleEditGuest(i)"
+                    >
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button
+                      class="btn btn-dark"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="Remove guest"
+                      (click)="removeGuest(guest)"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </ng-template>
+                <ng-template #editable>
+                  <td>
+                    <span class="input-wrap">
+                      <span class="width-machine" aria-hidden="true">{{
+                        guest.name
+                      }}</span>
+                      <input
+                        class="input"
+                        type="text"
+                        value="{{ guest.name }}"
+                      />
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="input-wrap">
+                      <span class="width-machine" aria-hidden="true">{{
+                        guest.howMany
+                      }}</span>
+                      <input
+                        class="input number"
+                        type="number"
+                        value="{{ guest.howMany }}"
+                      />
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="input-wrap">
+                      <span class="width-machine" aria-hidden="true">{{
+                        guest.howMuch
+                      }}</span>
+                      <input
+                        class="input number"
+                        type="number"
+                        value="{{ guest.howMuch }}"
+                      />
+                    </span>
+                  </td>
+                  <td
+                    class="d-flex justify-content-center align-content-center"
+                  >
+                    <button
+                      class="btn btn-dark me-1"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="Save changes"
+                      (click)="saveGuestChanges(guest, i)"
+                    >
+                      <i class="bi bi-check2-square"></i>
+                    </button>
+                    <button
+                      class="btn btn-dark"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="Cancel edit"
+                      (click)="toggleEditGuest(i)"
+                    >
+                      <i class="bi bi-x-square"></i>
+                    </button>
+                  </td>
+                </ng-template>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <div class="modal-footer">
           <div>
             <button

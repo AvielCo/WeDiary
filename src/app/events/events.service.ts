@@ -29,15 +29,21 @@ export class EventsService {
         const eventList: Event[] = [];
         for (const key in responseData) {
           const event = responseData[key];
-          eventList.push(event);
+          eventList.push(
+            new Event(
+              event.date,
+              event.location,
+              event.firstPerson,
+              event.secondPerson,
+              event._id,
+              event.guests
+            )
+          );
         }
-        console.log(eventList);
-        console.log(new Date(eventList[0].date));
         eventList.sort(
           (a: Event, b: Event) =>
             new Date(a.date).getTime() - new Date(b.date).getTime()
         );
-        console.log(eventList);
         return eventList;
       })
     );

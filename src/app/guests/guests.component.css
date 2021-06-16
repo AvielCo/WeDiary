@@ -1,0 +1,16 @@
+.input-wrap {
+  position: relative;
+}
+.input-wrap .input {
+  position: absolute;
+
+  width: 100%;
+  left: 0;
+}
+.input.number {
+  text-align: center;
+}
+.width-machine {
+  /*   Sort of a magic number to add extra space for number spinner */
+  padding: 0 1rem;
+}

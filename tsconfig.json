@@ -22,7 +22,8 @@
       "@header/*": ["src/app/header/*"],
       "@auth/*": ["src/app/auth/*"],
       "@events/*": ["src/app/events/*"],
-      "@events/add/*": ["src/app/events/add/*"]
+      "@events/add/*": ["src/app/events/add/*"],
+      "@guests/*": ["src/app/guests/*"]
     }
   },
   "angularCompilerOptions": {

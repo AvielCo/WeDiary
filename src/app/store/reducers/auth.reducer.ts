@@ -1,17 +1,17 @@
 import * as Actions from '@store/actions/auth.actions';
 
-export interface AuthState {
+export interface State {
   isModalOpen: boolean;
 }
 
-const initialState: AuthState = {
+const initialState: State = {
   isModalOpen: false,
 };
 
 export function authReducer(
-  state: AuthState = initialState,
+  state: State = initialState,
   action: Actions.AuthActions
-): AuthState {
+): State {
   switch (action.type) {
     case Actions.OPEN_MODAL || Actions.CLOSE_MODAL:
       return {

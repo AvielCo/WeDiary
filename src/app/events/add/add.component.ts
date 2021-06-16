@@ -29,6 +29,7 @@ export class AddComponent implements OnInit {
     const newEvent = new Event(date, location, firstPerson, secondPerson);
     this.store.dispatch(new EventsActions.AddEvent(newEvent));
     this.toggleModal();
+    newEventForm.reset();
   }
 
   toggleModal() {

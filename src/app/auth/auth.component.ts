@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
 import { Observable } from 'rxjs';
-import { CloseAuthModal } from '@store/actions/auth.actions';
+import { CloseModal } from '@store/actions/auth.actions';
 import * as fromApp from '@store/index';
 
 @Component({
@@ -12,8 +12,6 @@ import * as fromApp from '@store/index';
   styleUrls: ['./auth.component.css'],
 })
 export class AuthComponent implements OnInit {
-  authStore?: Observable<{ isModalOpen: boolean }>;
-
   authMode: string = 'login';
   private modalElement?: Modal;
 
@@ -39,6 +37,6 @@ export class AuthComponent implements OnInit {
   }
 
   closeModal() {
-    this.store.dispatch(new CloseAuthModal());
+    this.store.dispatch(new CloseModal());
   }
 }

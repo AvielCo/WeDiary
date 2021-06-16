@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Event } from '@events/event.model';
 import { EventsService } from '@events/events.service';
-import * as Actions from '@store/actions/event.actions';
+import * as EventsActions from '@store/actions/event.actions';
+import * as GuestsActions from '@store/actions/guest.actions';
 import * as fromApp from '@store/index';
 
 @Component({
@@ -33,12 +34,18 @@ export class EventsComponent implements OnInit {
 
   async addNewEvent(event: Event) {
     await this.eventSerivce.postEvent(event);
-    this.store.dispatch(new Actions.AddEvent(undefined));
+    this.store.dispatch(new EventsActions.AddEvent(undefined));
   }
 
   getEvents() {
     this.eventSerivce
       .fetchEvents()
       .subscribe((events) => (this.eventList = events));
+  }
+
+  openGuestsModal(event: Event) {
+    this.store.dispatch(
+      new GuestsActions.OpenModal({ toOpen: true, event: event })
+    );
   }
 }

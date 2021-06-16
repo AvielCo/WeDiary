@@ -8,13 +8,21 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { AuthComponent } from './auth/auth.component';
-import { reducers } from './store';
 import { EventsComponent } from './events/events.component';
 import { AddComponent } from './events/add/add.component';
 import { GuestsComponent } from './guests/guests.component';
 
+import { reducers } from './store';
+
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, AuthComponent, EventsComponent, AddComponent, GuestsComponent],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    AuthComponent,
+    EventsComponent,
+    AddComponent,
+    GuestsComponent,
+  ],
   imports: [
     AppRoutingModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
