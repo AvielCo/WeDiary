@@ -3,8 +3,8 @@ import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
 import { Observable } from 'rxjs';
-import { CloseAuthModal } from '../store/actions/auth.actions';
-import * as fromApp from '../store';
+import { CloseAuthModal } from '@store/actions/auth.actions';
+import * as fromApp from '@store/index';
 
 @Component({
   selector: 'app-auth',

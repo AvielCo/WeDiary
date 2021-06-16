@@ -1,9 +1,9 @@
 import { Event } from 'src/app/events/event.model';
-import * as Actions from '../actions/event.actions';
+import { EventsService } from '@events/events.service';
+import * as Actions from '@store/actions/event.actions';
 
 export interface State {
   newEvent?: Event;
-  eventList?: [Event];
 }
 
 export interface AppState {
@@ -12,7 +12,6 @@ export interface AppState {
 
 const initialState: State = {
   newEvent: undefined,
-  eventList: undefined,
 };
 
 export function eventsReducer(
@@ -24,11 +23,6 @@ export function eventsReducer(
       return {
         ...state,
         newEvent: action.payload as Event,
-      };
-    case Actions.GET_EVENTS:
-      return {
-        ...state,
-        eventList: action.payload as [Event],
       };
     default:
       return state;

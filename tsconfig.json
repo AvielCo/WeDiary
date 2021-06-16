@@ -16,10 +16,14 @@
     "importHelpers": true,
     "target": "es2017",
     "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "lib": ["es2018", "dom"],
+    "paths": {
+      "@store/*": ["src/app/store/*"],
+      "@header/*": ["src/app/header/*"],
+      "@auth/*": ["src/app/auth/*"],
+      "@events/*": ["src/app/events/*"],
+      "@events/add/*": ["src/app/events/add/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

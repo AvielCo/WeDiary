@@ -1,5 +1,8 @@
-import { authReducer, AuthState } from './reducers/auth.reducer';
-import { eventsReducer, State as EventsState } from './reducers/event.reducer';
+import { authReducer, AuthState } from '@store/reducers/auth.reducer';
+import {
+  eventsReducer,
+  State as EventsState,
+} from '@store/reducers/event.reducer';
 import { ActionReducerMap } from '@ngrx/store';
 
 export const rootReducer = {};

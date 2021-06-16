@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
-import { Event } from '../event.model';
-import { Person } from '../person.model';
-import * as FromEvents from '../../store/reducers/event.reducer';
-import * as EventsActions from '../../store/actions/event.actions';
+import { Event } from '@events/event.model';
+import { Person } from '@events/person.model';
+import * as FromEvents from '@store/reducers/event.reducer';
+import * as EventsActions from '@store/actions/event.actions';
 
 @Component({
   selector: 'app-add',
@@ -28,6 +28,7 @@ export class AddComponent implements OnInit {
     const secondPerson = new Person(spname, spgender);
     const newEvent = new Event(date, location, firstPerson, secondPerson);
     this.store.dispatch(new EventsActions.AddEvent(newEvent));
+    this.toggleModal();
   }
 
   toggleModal() {

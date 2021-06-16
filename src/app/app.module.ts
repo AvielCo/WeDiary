@@ -11,9 +11,10 @@ import { AuthComponent } from './auth/auth.component';
 import { reducers } from './store';
 import { EventsComponent } from './events/events.component';
 import { AddComponent } from './events/add/add.component';
+import { GuestsComponent } from './guests/guests.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, AuthComponent, EventsComponent, AddComponent],
+  declarations: [AppComponent, HeaderComponent, AuthComponent, EventsComponent, AddComponent, GuestsComponent],
   imports: [
     AppRoutingModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

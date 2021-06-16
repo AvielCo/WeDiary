@@ -1,6 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { OpenAuthModal } from '../store/actions/auth.actions';
+import { OpenAuthModal } from '@store/actions/auth.actions';
 
 @Component({
   selector: 'app-header',

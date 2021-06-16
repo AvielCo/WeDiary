@@ -1,4 +1,4 @@
-import * as Actions from '../actions/auth.actions';
+import * as Actions from '@store/actions/auth.actions';
 
 export interface AuthState {
   isModalOpen: boolean;
