@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
 import * as fromApp from '@store/index';
-import { Event } from '@events/event.model';
+import { Event as EventModel } from '@events/event.model';
 import { GuestsService } from './guests.service';
 import { Guest } from './guest.model';
 
@@ -13,9 +13,17 @@ import { Guest } from './guest.model';
 })
 export class GuestsComponent implements OnInit {
   private modalElement?: Modal;
+  private event?: EventModel;
+  private changes: {
+    name?: string;
+    howMany?: Number;
+    howMuch?: Number;
+    comment?: string;
+  } = {};
+  activeEditRow: number = -1;
+  selectedRow: number = -1;
   isLoading: boolean = true;
   guestsList?: Guest[];
-  private event?: Event;
 
   constructor(
     private store: Store<fromApp.AppState>,
@@ -35,35 +43,71 @@ export class GuestsComponent implements OnInit {
   }
 
   toggleModal() {
+    this.selectedRow = -1;
+    this.activeEditRow = -1;
     this.modalElement!.toggle();
+  }
+
+  onChange(e: Event) {
+    const { name, value } = e.target as HTMLInputElement;
+    this.changes = {
+      ...this.changes,
+      [name]: value,
+    };
   }
 
   addNewGuest() {}
 
-  getGuests(event: Event) {
+  getGuests(event: EventModel) {
     this.guestsService.fetchGuests(event).subscribe((guests) => {
-      console.log(guests);
       this.guestsList = guests;
       this.isLoading = false;
     });
   }
 
-  removeGuest(guest: Guest) {
-    // TODO: implement DELETE in service
+  removeGuest(index: number) {
+    this.isLoading = true;
+    const guest = this.guestsList![index];
+    this.guestsService
+      .deleteGuest(this.event!, guest)
+      .then((res) => {
+        this.getGuests(this.event!);
+        this.toggleEditGuest(-1);
+      })
+      .catch((error) => {
+        this.toggleEditGuest(-1);
+        this.isLoading = false;
+      });
     // TODO: refresh list after delete
   }
 
-  saveGuestChanges(edittedGuest: Guest, index: number) {
+  saveGuestChanges(index: number) {
     const guest: Guest = this.guestsList![index];
-    if (guest.equal(edittedGuest)) {
-      this.toggleEditGuest(index);
+    if (guest.equal(this.changes)) {
+      this.toggleEditGuest(-1);
       return;
     }
-    // TODO: implement PUT in service
+    this.isLoading = true;
+    this.guestsService
+      .updateGuest(this.event!, guest, this.changes)
+      .then((res) => {
+        this.getGuests(this.event!);
+        this.toggleEditGuest(-1);
+      })
+      .catch((error) => {
+        this.toggleEditGuest(-1);
+        this.isLoading = false;
+      });
     // TODO: refresh list after edit
   }
 
+  changeSelectedRow(index: number) {
+    this.selectedRow = index;
+    console.log(index);
+  }
+
   toggleEditGuest(index: number) {
-    this.guestsList![index].editable = !this.guestsList![index].editable;
+    this.activeEditRow = index;
+    this.changes = {};
   }
 }

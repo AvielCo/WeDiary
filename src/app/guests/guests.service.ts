@@ -34,10 +34,10 @@ export class GuestsService {
           const guest = responseData[key];
           guestsList.push(
             new Guest(
-              false,
               guest.name,
               guest.howMany,
               guest.howMuch,
+              guest.comment,
               guest._id
             )
           );
@@ -53,5 +53,37 @@ export class GuestsService {
         return guestsList;
       })
     );
+  }
+
+  updateGuest(
+    event: Event,
+    guest: Guest,
+    update: { name?: string; howMany?: Number; howMuch?: Number }
+  ) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .put(`${this.url}/${event._id}/${guest._id}`, update, {
+          responseType: 'text',
+        })
+        .subscribe(
+          (res) => resolve(res),
+          (error) => {
+            if (error) reject(error);
+          }
+        );
+    });
+  }
+
+  deleteGuest(event: Event, guest: Guest) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .delete(`${this.url}/${event._id}/${guest._id}`, {
+          responseType: 'text',
+        })
+        .subscribe(
+          (res) => resolve(res),
+          (error) => reject(error)
+        );
+    });
   }
 }
