@@ -13,6 +13,7 @@ import { AddComponent } from './events/add/add.component';
 import { GuestsComponent } from './guests/guests.component';
 
 import { reducers } from './store';
+import { SummaryComponent } from './guests/summary/summary.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { reducers } from './store';
     EventsComponent,
     AddComponent,
     GuestsComponent,
+    SummaryComponent,
   ],
   imports: [
     AppRoutingModule,

@@ -96,8 +96,8 @@ export class GuestsComponent implements OnInit {
   }
 
   saveGuestChanges(index: number) {
-    const { name, howMany, howMuch, comment } = this.changes;
-    if (!name || !howMany) {
+    const { name, howMany } = this.changes;
+    if (name?.length == 0 || howMany?.valueOf() == 0) {
       alert('Name and How many are required.');
       return;
     }
