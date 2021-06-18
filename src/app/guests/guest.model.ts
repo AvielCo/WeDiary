@@ -2,8 +2,8 @@ export class Guest {
   constructor(
     public name: string,
     public howMany: Number,
+    public comment: string = '',
     public howMuch?: Number,
-    public comment?: string,
     public _id?: string
   ) {}
 

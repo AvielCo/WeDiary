@@ -22,6 +22,8 @@ export class GuestsComponent implements OnInit {
   } = {};
   activeEditRow: number = -1;
   selectedRow: number = -1;
+  addingMode: boolean = false;
+  mode?: string;
   isLoading: boolean = true;
   guestsList?: Guest[];
 
@@ -56,7 +58,20 @@ export class GuestsComponent implements OnInit {
     };
   }
 
-  addNewGuest() {}
+  addNewGuest() {
+    const { name, howMany, howMuch, comment } = this.changes;
+    if (!name || !howMany) {
+      alert('Name and How many are required.');
+      return;
+    }
+
+    const newGuest = new Guest(name, howMany, comment, howMuch);
+
+    this.guestsService.postGuest(this.event!, newGuest).then((_res) => {
+      this.getGuests(this.event!);
+      this.changeMode();
+    });
+  }
 
   getGuests(event: EventModel) {
     this.guestsService.fetchGuests(event).subscribe((guests) => {
@@ -70,18 +85,23 @@ export class GuestsComponent implements OnInit {
     const guest = this.guestsList![index];
     this.guestsService
       .deleteGuest(this.event!, guest)
-      .then((res) => {
+      .then((_res) => {
         this.getGuests(this.event!);
         this.toggleEditGuest(-1);
       })
-      .catch((error) => {
+      .catch((_error) => {
         this.toggleEditGuest(-1);
         this.isLoading = false;
       });
-    // TODO: refresh list after delete
   }
 
   saveGuestChanges(index: number) {
+    const { name, howMany, howMuch, comment } = this.changes;
+    if (!name || !howMany) {
+      alert('Name and How many are required.');
+      return;
+    }
+
     const guest: Guest = this.guestsList![index];
     if (guest.equal(this.changes)) {
       this.toggleEditGuest(-1);
@@ -90,24 +110,51 @@ export class GuestsComponent implements OnInit {
     this.isLoading = true;
     this.guestsService
       .updateGuest(this.event!, guest, this.changes)
-      .then((res) => {
+      .then((_res) => {
         this.getGuests(this.event!);
         this.toggleEditGuest(-1);
       })
-      .catch((error) => {
+      .catch((_error) => {
         this.toggleEditGuest(-1);
         this.isLoading = false;
       });
-    // TODO: refresh list after edit
+  }
+
+  changeMode(mode?: string, index?: number) {
+    switch (mode) {
+      case 'add':
+        this.selectedRow = -1;
+        this.activeEditRow = -1;
+        this.toggleAddingMode();
+        break;
+      case 'edit':
+        this.addingMode = false;
+        this.toggleEditGuest(index!);
+        break;
+      case 'add-cancel':
+        this.toggleAddingMode();
+        break;
+      case 'edit-cancel':
+        this.changeSelectedRow(-1);
+        break;
+      default:
+        this.changeMode('add-cancel');
+        this.changeMode('edit-cancel');
+        break;
+    }
+    this.changes = {};
   }
 
   changeSelectedRow(index: number) {
     this.selectedRow = index;
-    console.log(index);
+    this.toggleEditGuest(-1);
   }
 
   toggleEditGuest(index: number) {
     this.activeEditRow = index;
-    this.changes = {};
+  }
+
+  toggleAddingMode() {
+    this.addingMode = !this.addingMode;
   }
 }

@@ -15,8 +15,11 @@
   padding: 0 1rem;
 }
 
-.text-right {
+.text-end {
   text-align: end;
+}
+.text-start {
+  text-align: start;
 }
 
 input::-webkit-outer-spin-button,

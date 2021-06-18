@@ -12,7 +12,7 @@ export class GuestsService {
   public async postGuest(event: Event, guest: Guest) {
     return new Promise((resolve, reject) => {
       this.http
-        .post(this.url, { event, guest }, { responseType: 'text' })
+        .post(`${this.url}/${event._id}`, guest, { responseType: 'text' })
         .subscribe(
           (res) => {
             resolve(res);
@@ -36,8 +36,8 @@ export class GuestsService {
             new Guest(
               guest.name,
               guest.howMany,
-              guest.howMuch,
               guest.comment,
+              guest.howMuch,
               guest._id
             )
           );
