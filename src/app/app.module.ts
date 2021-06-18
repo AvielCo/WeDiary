@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { StoreModule } from '@ngrx/store';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -14,6 +14,8 @@ import { GuestsComponent } from './guests/guests.component';
 
 import { reducers } from './store';
 import { SummaryComponent } from './guests/summary/summary.component';
+import { AuthInterceptor } from './auth.interceptor';
+import { TableComponent } from './guests/table/table.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { SummaryComponent } from './guests/summary/summary.component';
     AddComponent,
     GuestsComponent,
     SummaryComponent,
+    TableComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -32,7 +35,9 @@ import { SummaryComponent } from './guests/summary/summary.component';
     HttpClientModule,
     StoreModule.forRoot(reducers),
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
