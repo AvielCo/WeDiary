@@ -29,7 +29,10 @@
         #authForm="ngForm"
         (ngSubmit)="onSubmit(authForm)"
       >
-        <div class="modal-body">
+        <div class="modal-body" *ngIf="isLoading">
+          <app-loading-spinner></app-loading-spinner>
+        </div>
+        <div class="modal-body" *ngIf="!isLoading">
           <div class="row">
             <div class="col-xs-12">
               <div class="form-group">
@@ -60,15 +63,24 @@
                   <label for="password">Password</label>
                 </div>
               </div>
-              <a
-                *ngIf="authMode == 'login'; else register"
-                (click)="switchAuthMode()"
-                href="#"
-                >Not registered?</a
-              >
-              <ng-template #register>
-                <a (click)="switchAuthMode()" href="#">Already registered?</a>
-              </ng-template>
+              <div class="row">
+                <div class="col">
+                  <a
+                    *ngIf="authMode == 'login'; else register"
+                    (click)="switchAuthMode()"
+                    href="#"
+                    >Not registered?</a
+                  >
+                  <ng-template #register>
+                    <a (click)="switchAuthMode()" href="#"
+                      >Already registered?</a
+                    >
+                  </ng-template>
+                </div>
+                <div class="col" *ngIf="error">
+                  <p class="text-danger">{{ error }}</p>
+                </div>
+              </div>
               <div class="col-12"></div>
             </div>
           </div>

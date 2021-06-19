@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Event } from 'src/app/events/event.model';
+import { Event } from 'src/models/event.model';
 
 export const ADD_EVENT = 'ADD_EVENT';
 export const GET_EVENTS = 'GET_EVENTS';

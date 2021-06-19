@@ -1,4 +1,4 @@
-import { Event } from '@events/event.model';
+import { Event } from 'src/models/event.model';
 import { Action } from '@ngrx/store';
 
 export const OPEN_MODAL = 'OPEN_GUESTS_MODAL';

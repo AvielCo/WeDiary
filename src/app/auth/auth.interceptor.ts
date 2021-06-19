@@ -3,13 +3,12 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  constructor() {}
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    const modifiedReq = req.clone({
-      headers: req.headers.append('Auth', 'xyz'),
-    });
-    console.log(modifiedReq);
-    return next.handle(modifiedReq);
+    return next.handle(req);
   }
 }

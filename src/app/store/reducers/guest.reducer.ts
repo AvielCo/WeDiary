@@ -1,4 +1,4 @@
-import { Event } from '@events/event.model';
+import { Event } from 'src/models/event.model';
 import * as Actions from '@store/actions/guest.actions';
 
 export interface State {

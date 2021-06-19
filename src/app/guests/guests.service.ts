@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Event } from '@events/event.model';
-import { Guest } from '@guests/guest.model';
+import { Event } from 'src/models/event.model';
+import { Guest } from 'src/models/guest.model';
 import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
@@ -12,7 +12,10 @@ export class GuestsService {
   public async postGuest(event: Event, guest: Guest) {
     return new Promise((resolve, reject) => {
       this.http
-        .post(`${this.url}/${event._id}`, guest, { responseType: 'text' })
+        .post(`${this.url}/${event._id}`, guest, {
+          responseType: 'text',
+          withCredentials: true,
+        })
         .subscribe(
           (res) => {
             resolve(res);
@@ -27,32 +30,34 @@ export class GuestsService {
   }
 
   public fetchGuests(event: Event) {
-    return this.http.get<Guest[]>(`${this.url}/all/${event._id}`).pipe(
-      map((responseData) => {
-        const guestsList: Guest[] = [];
-        for (const key in responseData) {
-          const guest = responseData[key];
-          guestsList.push(
-            new Guest(
-              guest.name,
-              guest.howMany,
-              guest.comment,
-              guest.howMuch,
-              guest._id
-            )
-          );
-        }
-        guestsList.sort((a: Guest, b: Guest) => {
-          if (a.name < b.name) {
-            return -1;
-          } else if (b.name < a.name) {
-            return 1;
+    return this.http
+      .get<Guest[]>(`${this.url}/all/${event._id}`, { withCredentials: true })
+      .pipe(
+        map((responseData) => {
+          const guestsList: Guest[] = [];
+          for (const key in responseData) {
+            const guest = responseData[key];
+            guestsList.push(
+              new Guest(
+                guest.name,
+                guest.howMany,
+                guest.comment,
+                guest.howMuch,
+                guest._id
+              )
+            );
           }
-          return 0;
-        });
-        return guestsList;
-      })
-    );
+          guestsList.sort((a: Guest, b: Guest) => {
+            if (a.name < b.name) {
+              return -1;
+            } else if (b.name < a.name) {
+              return 1;
+            }
+            return 0;
+          });
+          return guestsList;
+        })
+      );
   }
 
   updateGuest(
@@ -64,6 +69,7 @@ export class GuestsService {
       this.http
         .put(`${this.url}/${event._id}/${guest._id}`, update, {
           responseType: 'text',
+          withCredentials: true,
         })
         .subscribe(
           (res) => resolve(res),
@@ -79,6 +85,7 @@ export class GuestsService {
       this.http
         .delete(`${this.url}/${event._id}/${guest._id}`, {
           responseType: 'text',
+          withCredentials: true,
         })
         .subscribe(
           (res) => resolve(res),

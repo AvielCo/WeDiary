@@ -14,17 +14,19 @@ import { GuestsComponent } from './guests/guests.component';
 
 import { reducers } from './store';
 import { SummaryComponent } from './guests/summary/summary.component';
-import { AuthInterceptor } from './auth.interceptor';
+import { AuthInterceptor } from './auth/auth.interceptor';
 import { TableComponent } from './guests/table/table.component';
+import { LoadingSpinnerComponent } from 'src/shared/loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
     AuthComponent,
-    EventsComponent,
     AddComponent,
+    EventsComponent,
     GuestsComponent,
+    HeaderComponent,
+    LoadingSpinnerComponent,
     SummaryComponent,
     TableComponent,
   ],

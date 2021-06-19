@@ -1,4 +1,4 @@
-import { Event } from 'src/app/events/event.model';
+import { Event } from 'src/models/event.model';
 import { EventsService } from '@events/events.service';
 import * as Actions from '@store/actions/event.actions';
 

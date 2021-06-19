@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
 import * as fromApp from '@store/index';
-import { Event as EventModel } from '@events/event.model';
+import { Event as EventModel } from 'src/models/event.model';
 import { GuestsService } from './guests.service';
-import { Guest } from './guest.model';
+import { Guest } from '../../models/guest.model';
 
 @Component({
   selector: 'app-guests',

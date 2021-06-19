@@ -2,10 +2,12 @@ import * as Actions from '@store/actions/auth.actions';
 
 export interface State {
   isModalOpen: boolean;
+  token?: string;
 }
 
 const initialState: State = {
   isModalOpen: false,
+  token: undefined,
 };
 
 export function authReducer(
@@ -18,6 +20,7 @@ export function authReducer(
         ...state,
         isModalOpen: action.payload,
       };
+
     default:
       return state;
   }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Event } from '@events/event.model';
+import { Event } from 'src/models/event.model';
 import { EventsService } from '@events/events.service';
 import * as EventsActions from '@store/actions/event.actions';
 import * as GuestsActions from '@store/actions/guest.actions';

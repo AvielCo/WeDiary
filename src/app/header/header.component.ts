@@ -13,7 +13,6 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {}
 
   openAuthModal() {
-    console.log('clicked login');
     this.store.dispatch(new OpenModal());
   }
 }

@@ -1,4 +1,4 @@
-import { Guest } from '../guests/guest.model';
+import { Guest } from './guest.model';
 import { Person } from './person.model';
 
 export class Event {

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
-import { Event } from '@events/event.model';
-import { Person } from '@events/person.model';
+import { Event } from 'src/models/event.model';
+import { Person } from 'src/models/person.model';
 import * as FromEvents from '@store/reducers/event.reducer';
 import * as EventsActions from '@store/actions/event.actions';
 
