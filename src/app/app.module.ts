@@ -17,6 +17,7 @@ import { SummaryComponent } from './guests/summary/summary.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { TableComponent } from './guests/table/table.component';
 import { LoadingSpinnerComponent } from 'src/shared/loading-spinner/loading-spinner.component';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [

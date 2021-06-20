@@ -1,12 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/operators';
-
-interface AuthResponseData {
-  _id: string;
-  refreshToken: string;
-  expiresIn: string;
-}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -23,15 +16,23 @@ export class AuthService {
   }
 
   public login(email: string, password: string) {
-    return this.http.post<AuthResponseData>(
+    return this.http.post(
       `${this.url}/login`,
       {
         email,
         password,
       },
       {
+        responseType: 'text',
         withCredentials: true,
       }
     );
+  }
+
+  public autoLogin() {
+    return this.http.get(`${this.url}`, {
+      responseType: 'text',
+      withCredentials: true,
+    });
   }
 }

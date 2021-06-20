@@ -2,9 +2,16 @@
   <div class="container-fluid">
     <span class="navbar-brand mb-0 h1">WeDairy</span>
     <div class="d-flex me-2" role="group">
-      <button type="button" class="btn btn-dark" (click)="openAuthModal()">
-        Login
-      </button>
+      <ng-template [ngIf]="!isLoggedIn" [ngIfElse]="loggedIn">
+        <button type="button" class="btn btn-dark" (click)="openAuthModal()">
+          Login
+        </button>
+      </ng-template>
+      <ng-template #loggedIn>
+        <button type="button" class="btn btn-dark" (click)="logout()">
+          Logout
+        </button>
+      </ng-template>
     </div>
   </div>
 </nav>

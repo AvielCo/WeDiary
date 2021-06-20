@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
 import { Observable } from 'rxjs';
-import { CloseModal } from '@store/actions/auth.actions';
+import * as Action from '@store/actions/auth.actions';
 import * as fromApp from '@store/index';
 import { AuthService } from './auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -18,6 +18,7 @@ export class AuthComponent implements OnInit {
   authMode: string = 'login';
   isLoading: boolean = false;
   error?: string;
+  isLoggedIn?: boolean;
 
   constructor(
     private store: Store<fromApp.AppState>,
@@ -25,10 +26,22 @@ export class AuthComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.authService.autoLogin().subscribe(
+      (_res) => {
+        this.store.dispatch(new Action.Login());
+      },
+      (_err: HttpErrorResponse) => {
+        console.log(_err);
+      }
+    );
+
     this.store.select('auth').subscribe((value) => {
-      const { isModalOpen } = value;
+      const { isModalOpen, isLoggedIn } = value;
       if (isModalOpen) {
         this.modalElement!.show();
+      }
+      if (isLoggedIn !== undefined) {
+        this.isLoggedIn = isLoggedIn;
       }
     });
     this.modalElement = new Modal(document.getElementById('exampleModal')!);
@@ -43,7 +56,7 @@ export class AuthComponent implements OnInit {
     switch (this.authMode) {
       case 'register':
         this.authService.register(email, password).subscribe(
-          (res) => {
+          (_res) => {
             this.isLoading = false;
           },
           (err: HttpErrorResponse) => {
@@ -68,13 +81,14 @@ export class AuthComponent implements OnInit {
         break;
       case 'login':
         this.authService.login(email, password).subscribe(
-          (res) => {
+          (_res) => {
             this.isLoading = false;
+            this.store.dispatch(new Action.Login());
           },
           (errorResponse: HttpErrorResponse) => {
+            console.log(errorResponse);
             const { status, message } = errorResponse.error.error;
             this.error = message;
-
             this.isLoading = false;
           }
         );
@@ -83,7 +97,6 @@ export class AuthComponent implements OnInit {
       default:
         return;
     }
-    form.reset();
   }
 
   switchAuthMode() {
@@ -91,6 +104,6 @@ export class AuthComponent implements OnInit {
   }
 
   closeModal() {
-    this.store.dispatch(new CloseModal());
+    this.store.dispatch(new Action.CloseModal());
   }
 }
