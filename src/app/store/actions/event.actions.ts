@@ -1,13 +1,25 @@
 import { Action } from '@ngrx/store';
 import { Event } from 'src/models/event.model';
 
-export const ADD_EVENT = 'ADD_EVENT';
-export const GET_EVENTS = 'GET_EVENTS';
+export const START_ADD_EVENT = '[Event] add event';
+export const ADD_EVENT_SUCCESS = '[Event] add event success';
+export const ADD_EVENT_FAIL = '[Event] add event failed';
+export const GET_EVENTS = '[Event] get events';
 
-export class AddEvent implements Action {
-  readonly type: string = ADD_EVENT;
+export class StartAddEvent implements Action {
+  readonly type: string = START_ADD_EVENT;
 
   constructor(public payload?: Event) {}
+}
+
+export class AddEventSuccess implements Action {
+  readonly type: string = ADD_EVENT_SUCCESS;
+}
+
+export class AddEventFail implements Action {
+  readonly type: string = ADD_EVENT_FAIL;
+
+  constructor(public payload: string) {}
 }
 
 export class GetEvents implements Action {
@@ -16,4 +28,8 @@ export class GetEvents implements Action {
   constructor(public payload?: [Event]) {}
 }
 
-export type EventsActions = AddEvent | GetEvents;
+export type EventsActions =
+  | StartAddEvent
+  | AddEventSuccess
+  | AddEventFail
+  | GetEvents;

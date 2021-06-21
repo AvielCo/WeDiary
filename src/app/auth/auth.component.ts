@@ -1,12 +1,9 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
-import { Observable } from 'rxjs';
-import * as Action from '@store/actions/auth.actions';
+import * as AuthActions from '@store/actions/auth.actions';
 import * as fromApp from '@store/index';
-import { AuthService } from './auth.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-auth',
@@ -20,29 +17,16 @@ export class AuthComponent implements OnInit {
   error?: string;
   isLoggedIn?: boolean;
 
-  constructor(
-    private store: Store<fromApp.AppState>,
-    private authService: AuthService
-  ) {}
+  constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit(): void {
-    this.authService.autoLogin().subscribe(
-      (_res) => {
-        this.store.dispatch(new Action.Login());
-      },
-      (_err: HttpErrorResponse) => {
-        console.log(_err);
-      }
-    );
-
-    this.store.select('auth').subscribe((value) => {
-      const { isModalOpen, isLoggedIn } = value;
+    this.store.select('auth').subscribe((authState) => {
+      const { isModalOpen } = authState;
       if (isModalOpen) {
         this.modalElement!.show();
       }
-      if (isLoggedIn !== undefined) {
-        this.isLoggedIn = isLoggedIn;
-      }
+      this.isLoading = authState.loading;
+      this.error = authState.error;
     });
     this.modalElement = new Modal(document.getElementById('exampleModal')!);
   }
@@ -55,44 +39,10 @@ export class AuthComponent implements OnInit {
     const { email, password } = form.value;
     switch (this.authMode) {
       case 'register':
-        this.authService.register(email, password).subscribe(
-          (_res) => {
-            this.isLoading = false;
-          },
-          (err: HttpErrorResponse) => {
-            switch (err.status) {
-              case 400:
-                // BAD REQUEST
-                break;
-              case 404:
-                break;
-              case 409:
-                this.error = 'Email already exists.';
-                break;
-              case 500:
-                this.error = 'Internal server error';
-                break;
-              default:
-                this.error = 'An error occurred.';
-            }
-            this.isLoading = false;
-          }
-        );
+        this.store.dispatch(new AuthActions.RegisterStart({ email, password }));
         break;
       case 'login':
-        this.authService.login(email, password).subscribe(
-          (_res) => {
-            this.isLoading = false;
-            this.store.dispatch(new Action.Login());
-          },
-          (errorResponse: HttpErrorResponse) => {
-            console.log(errorResponse);
-            const { status, message } = errorResponse.error.error;
-            this.error = message;
-            this.isLoading = false;
-          }
-        );
-
+        this.store.dispatch(new AuthActions.LoginStart({ email, password }));
         break;
       default:
         return;
@@ -104,6 +54,6 @@ export class AuthComponent implements OnInit {
   }
 
   closeModal() {
-    this.store.dispatch(new Action.CloseModal());
+    this.store.dispatch(new AuthActions.CloseModal());
   }
 }

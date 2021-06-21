@@ -31,12 +31,19 @@ export class GuestsService {
 
   public fetchGuests(event: Event) {
     return this.http
-      .get<Guest[]>(`${this.url}/all/${event._id}`, { withCredentials: true })
+      .get<{ guests: Guest[]; accessToken: string }>(
+        `${this.url}/all/${event._id}`,
+        { withCredentials: true }
+      )
       .pipe(
         map((responseData) => {
+          const { accessToken, guests } = responseData;
+          if (accessToken) {
+            window.localStorage.setItem('accessToken', accessToken);
+          }
           const guestsList: Guest[] = [];
-          for (const key in responseData) {
-            const guest = responseData[key];
+          for (const key in guests) {
+            const guest = guests[key];
             guestsList.push(
               new Guest(
                 guest.name,

@@ -1,29 +1,45 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AuthService } from '@auth/auth.service';
 import { Store } from '@ngrx/store';
+import * as AuthActions from '@store/actions/auth.actions';
 import * as fromApp from '@store/index';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   title = 'WeDiary';
-  isLoggedIn = false;
-  private storeSub?: Subscription;
-  constructor(private store: Store<fromApp.AppState>) {}
+  isLoggedIn: boolean = false;
+  constructor(
+    private store: Store<fromApp.AppState>,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    this.storeSub = this.store.select('auth').subscribe((res) => {
-      const { isLoggedIn } = res;
-      if (isLoggedIn !== undefined) {
-        this.isLoggedIn = isLoggedIn;
-      }
+    this.validateTokens();
+
+    window.addEventListener(
+      'storage',
+      (storageEvent: StorageEvent) => {
+        if (storageEvent.key === 'accessToken') {
+          if (storageEvent.newValue) {
+            this.validateTokens();
+          }
+        }
+      },
+      false
+    );
+    this.store.select('auth').subscribe((res) => {
+      this.isLoggedIn = res.isLoggedIn;
     });
   }
 
-  ngOnDestroy() {
-    this.storeSub?.unsubscribe();
+  validateTokens() {
+    this.authService.validateAccessToken().subscribe(
+      (_res) => this.store.dispatch(new AuthActions.SetIsLoggedIn(true)),
+      (_err) => this.store.dispatch(new AuthActions.SetIsLoggedIn(false))
+    );
   }
 }

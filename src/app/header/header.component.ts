@@ -17,10 +17,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.storeSub = this.store.select('auth').subscribe((res) => {
-      const { isLoggedIn } = res;
-      if (isLoggedIn !== undefined) {
-        this.isLoggedIn = isLoggedIn;
-      }
+      this.isLoggedIn = res.isLoggedIn;
     });
   }
 
@@ -31,6 +28,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.store.dispatch(new Actions.Logout());
+    this.store.dispatch(new Actions.LogoutStart());
   }
 }

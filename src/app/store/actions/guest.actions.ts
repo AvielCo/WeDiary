@@ -1,8 +1,8 @@
 import { Event } from 'src/models/event.model';
 import { Action } from '@ngrx/store';
 
-export const OPEN_MODAL = 'OPEN_GUESTS_MODAL';
-export const CLOSE_MODAL = 'CLOSE_GUESTS_MODAL';
+export const OPEN_MODAL = '[Guest] open modal';
+export const CLOSE_MODAL = '[Guest] close modal';
 
 export class OpenModal implements Action {
   readonly type: string = OPEN_MODAL;

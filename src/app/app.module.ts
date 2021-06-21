@@ -18,6 +18,7 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 import { TableComponent } from './guests/table/table.component';
 import { LoadingSpinnerComponent } from 'src/shared/loading-spinner/loading-spinner.component';
 import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@store/effects/auth.effects';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { EffectsModule } from '@ngrx/effects';
   imports: [
     AppRoutingModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    EffectsModule.forRoot([AuthEffects]),
     FormsModule,
     HttpClientModule,
     StoreModule.forRoot(reducers),

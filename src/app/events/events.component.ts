@@ -33,14 +33,21 @@ export class EventsComponent implements OnInit {
   }
 
   async addNewEvent(event: Event) {
-    await this.eventSerivce.postEvent(event);
-    this.store.dispatch(new EventsActions.AddEvent(undefined));
+    this.eventSerivce.postEvent(event).subscribe(
+      (res) => {
+        console.log('new event added');
+      },
+      (error) => {
+        console.log('Error');
+      }
+    );
+    this.store.dispatch(new EventsActions.StartAddEvent(undefined));
   }
 
   getEvents() {
-    this.eventSerivce
-      .fetchEvents()
-      .subscribe((events) => (this.eventList = events));
+    this.eventSerivce.fetchEvents().subscribe((events) => {
+      this.eventList = events;
+    });
   }
 
   openGuestsModal(event: Event) {
