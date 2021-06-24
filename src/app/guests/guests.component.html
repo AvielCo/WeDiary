@@ -5,8 +5,17 @@
   aria-labelledby="guestsModal"
   aria-hidden="true"
 >
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+  <div
+    class="modal-dialog modal-lg"
+    [ngStyle]="{ 'pointer-events': isLoading ? 'none' : 'auto' }"
+  >
+    <div class="loading" *ngIf="isLoading">
+      <app-loading-spinner></app-loading-spinner>
+    </div>
+    <div
+      class="modal-content"
+      [ngStyle]="{ 'pointer-events': isLoading ? 'none' : 'auto' }"
+    >
       <div class="modal-header">
         <h5 class="modal-title">
           <span> Guests </span>
@@ -100,7 +109,7 @@
               data-bs-toggle="tooltip"
               data-bs-placement="top"
               title="Save changes"
-              (click)="saveGuestChanges(selectedRow)"
+              (click)="updateGuest(selectedRow)"
             >
               <i class="bi bi-check2-square"></i>
               Save
@@ -117,15 +126,6 @@
             </button>
           </div>
         </ng-template>
-
-        <div
-          *ngIf="isLoading || !guestsList"
-          class="d-flex justify-content-center"
-        >
-          <div class="spinner-border m-5" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
         <div class="table-responsive">
           <table class="table table-hover table-borderless">
             <thead>
@@ -141,9 +141,7 @@
               <!-- Content of the table -->
 
               <!-- Render list of guests only if there is at least one guest -->
-              <ng-template
-                [ngIf]="guestsList && guestsList.length > 0 && !isLoading"
-              >
+              <ng-template [ngIf]="guestsList && guestsList.length > 0">
                 <tr *ngFor="let guest of guestsList; let i = index">
                   <td scope="row">
                     <input

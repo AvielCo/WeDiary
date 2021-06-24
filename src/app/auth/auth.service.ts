@@ -32,7 +32,7 @@ export class AuthService {
     return this.http.delete(`${this.url}/logout`, { withCredentials: true });
   }
 
-  public validateAccessToken() {
+  public validateTokens() {
     return this.http.post(`${this.url}/validate-tokens`, null, {
       withCredentials: true,
       responseType: 'text',

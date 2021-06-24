@@ -1,5 +1,8 @@
 <div class="container">
   <div class="col">
+    <div class="loading" *ngIf="isLoading">
+      <app-loading-spinner></app-loading-spinner>
+    </div>
     <div *ngFor="let event of eventList">
       <div class="d-flex justify-content-center m-4">
         <div class="card" style="width: 18rem">
@@ -10,7 +13,7 @@
             <h6 class="card-subtitle text-muted mb-2">
               {{ event.date | date }} | {{ event.location }}
             </h6>
-            <button class="btn btn-dark" (click)="openGuestsModal(event)">
+            <button class="btn btn-dark" (click)="openGuestsModal(event._id!)">
               Guests
             </button>
           </div>

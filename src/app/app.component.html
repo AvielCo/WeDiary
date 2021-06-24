@@ -1,6 +1,8 @@
 <app-header></app-header>
 
 <app-auth></app-auth>
+<app-alert></app-alert>
+
 <ng-template [ngIf]="isLoggedIn" [ngIfElse]="notLoggedIn">
   <app-guests></app-guests>
   <app-events></app-events>

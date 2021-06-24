@@ -1,0 +1,17 @@
+<div
+  id="alert"
+  class="alert alert-dismissible fade show alert-{{ type }}"
+  role="alert"
+  [hidden]="!message"
+  *ngIf="message"
+>
+  <span>{{ message }}</span>
+  <button
+    id="close"
+    type="button"
+    class="btn-close"
+    data-dismiss="alert"
+    aria-label="Close"
+    (click)="dismissAlert()"
+  ></button>
+</div>

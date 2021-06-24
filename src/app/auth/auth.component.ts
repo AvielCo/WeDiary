@@ -14,7 +14,9 @@ export class AuthComponent implements OnInit {
   private modalElement?: Modal;
   authMode: string = 'login';
   isLoading: boolean = false;
-  error?: string;
+  loginError?: string;
+  registerError?: string;
+  authError?: string;
   isLoggedIn?: boolean;
 
   constructor(private store: Store<fromApp.AppState>) {}
@@ -26,7 +28,6 @@ export class AuthComponent implements OnInit {
         this.modalElement!.show();
       }
       this.isLoading = authState.loading;
-      this.error = authState.error;
     });
     this.modalElement = new Modal(document.getElementById('exampleModal')!);
   }

@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Modal } from 'bootstrap';
 import * as fromApp from '@store/index';
+import * as GuestsActions from '@store/actions/guest.actions';
 import { Event as EventModel } from 'src/models/event.model';
 import { GuestsService } from './guests.service';
 import { Guest } from '../../models/guest.model';
+import { multicast } from 'rxjs/operators';
 
 @Component({
   selector: 'app-guests',
@@ -13,7 +15,7 @@ import { Guest } from '../../models/guest.model';
 })
 export class GuestsComponent implements OnInit {
   private modalElement?: Modal;
-  private event?: EventModel;
+  private eventId?: string;
   private changes: {
     name?: string;
     howMany?: Number;
@@ -26,20 +28,24 @@ export class GuestsComponent implements OnInit {
   mode?: string;
   isLoading: boolean = true;
   guestsList?: Guest[];
+  newGuest?: Guest;
+  guestToDelete?: string;
+  guestToUpdate?: string;
 
-  constructor(
-    private store: Store<fromApp.AppState>,
-    private guestsService: GuestsService
-  ) {}
+  constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit(): void {
-    this.store.select('guests').subscribe((value) => {
-      const { isModalOpen, event } = value;
+    this.store.select('guests').subscribe((stateData) => {
+      const { isModalOpen } = stateData;
       if (isModalOpen) {
         this.modalElement!.show();
-        this.event = event;
-        this.getGuests(event!);
       }
+      this.isLoading = stateData.loading;
+      this.eventId = stateData.eventId;
+      this.guestsList = stateData.guests;
+      this.newGuest = stateData.newGuest;
+      this.guestToDelete = stateData.guestToDelete;
+      this.guestToUpdate = stateData.guestToUpdate;
     });
     this.modalElement = new Modal(document.getElementById('guestsModal')!);
   }
@@ -67,35 +73,29 @@ export class GuestsComponent implements OnInit {
 
     const newGuest = new Guest(name, howMany, comment, howMuch);
 
-    this.guestsService.postGuest(this.event!, newGuest).then((_res) => {
-      this.getGuests(this.event!);
-      this.changeMode();
-    });
+    this.store.dispatch(
+      new GuestsActions.AddGuestStart({
+        guest: newGuest,
+        eventId: this.eventId!,
+      })
+    );
   }
 
-  getGuests(event: EventModel) {
-    this.guestsService.fetchGuests(event).subscribe((guests) => {
-      this.guestsList = guests;
-      this.isLoading = false;
-    });
+  getGuests() {
+    this.store.dispatch(new GuestsActions.GetGuestsStart(this.eventId!));
   }
 
   removeGuest(index: number) {
-    this.isLoading = true;
     const guest = this.guestsList![index];
-    this.guestsService
-      .deleteGuest(this.event!, guest)
-      .then((_res) => {
-        this.getGuests(this.event!);
-        this.toggleEditGuest(-1);
+    this.store.dispatch(
+      new GuestsActions.RemoveGuestStart({
+        guestId: guest._id!,
+        eventId: this.eventId!,
       })
-      .catch((_error) => {
-        this.toggleEditGuest(-1);
-        this.isLoading = false;
-      });
+    );
   }
 
-  saveGuestChanges(index: number) {
+  updateGuest(index: number) {
     const { name, howMany } = this.changes;
     if (name?.length == 0 || howMany?.valueOf() == 0) {
       alert('Name and How many are required.');
@@ -107,17 +107,14 @@ export class GuestsComponent implements OnInit {
       this.toggleEditGuest(-1);
       return;
     }
-    this.isLoading = true;
-    this.guestsService
-      .updateGuest(this.event!, guest, this.changes)
-      .then((_res) => {
-        this.getGuests(this.event!);
-        this.toggleEditGuest(-1);
+
+    this.store.dispatch(
+      new GuestsActions.UpdateGuestStart({
+        guestId: guest._id!,
+        eventId: this.eventId!,
+        update: this.changes,
       })
-      .catch((_error) => {
-        this.toggleEditGuest(-1);
-        this.isLoading = false;
-      });
+    );
   }
 
   changeMode(mode?: string, index?: number) {

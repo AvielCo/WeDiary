@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth/auth.service';
 import { Store } from '@ngrx/store';
 import * as AuthActions from '@store/actions/auth.actions';
@@ -37,9 +37,6 @@ export class AppComponent implements OnInit {
   }
 
   validateTokens() {
-    this.authService.validateAccessToken().subscribe(
-      (_res) => this.store.dispatch(new AuthActions.SetIsLoggedIn(true)),
-      (_err) => this.store.dispatch(new AuthActions.SetIsLoggedIn(false))
-    );
+    this.store.dispatch(new AuthActions.TokenValidationStart());
   }
 }

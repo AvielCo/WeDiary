@@ -1,4 +1,9 @@
 button.circle {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 13px;
   font-size: 50px;
   width: 70px;
   z-index: auto;

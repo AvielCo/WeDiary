@@ -7,8 +7,17 @@
   data-bs-backdrop="static"
   data-bs-keyboard="false"
 >
-  <div class="modal-dialog">
-    <div class="modal-content">
+  <div
+    class="modal-dialog"
+    [ngStyle]="{ 'pointer-events': isLoading ? 'none' : 'auto' }"
+  >
+    <div class="loading" *ngIf="isLoading">
+      <app-loading-spinner></app-loading-spinner>
+    </div>
+    <div
+      class="modal-content"
+      [ngStyle]="{ 'pointer-events': isLoading ? 'none' : 'auto' }"
+    >
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">
           <span style="text-transform: capitalize">
@@ -29,10 +38,7 @@
         #authForm="ngForm"
         (ngSubmit)="onSubmit(authForm)"
       >
-        <div class="modal-body" *ngIf="isLoading">
-          <app-loading-spinner></app-loading-spinner>
-        </div>
-        <div class="modal-body" *ngIf="!isLoading">
+        <div class="modal-body">
           <div class="row">
             <div class="col-xs-12">
               <div class="form-group">
@@ -77,8 +83,14 @@
                     >
                   </ng-template>
                 </div>
-                <div class="col" *ngIf="error">
-                  <p class="text-danger">{{ error }}</p>
+                <div class="col" *ngIf="loginError && authMode === 'login'">
+                  <p class="text-danger">{{ loginError }}</p>
+                </div>
+                <div
+                  class="col"
+                  *ngIf="registerError && authMode === 'register'"
+                >
+                  <p class="text-danger">{{ registerError }}</p>
                 </div>
               </div>
               <div class="col-12"></div>

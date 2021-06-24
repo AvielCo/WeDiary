@@ -4,6 +4,7 @@ export interface State {
   isModalOpen: boolean;
   accessToken?: string;
   error?: string;
+  actionType?: string;
   loading: boolean;
   isLoggedIn: boolean;
 }
@@ -27,7 +28,6 @@ export function authReducer(
     case Actions.LOGIN_START:
       return {
         ...state,
-        error: undefined,
         loading: true,
       };
     case Actions.LOGIN_SUCCESS:
@@ -41,14 +41,14 @@ export function authReducer(
       return {
         ...state,
         loading: false,
-        error: (action as Actions.LoginFailed).payload,
+        error: (action as Actions.RegisterFailed).payload,
+        actionType: 'login',
         accessToken: undefined,
       };
     case Actions.REGISTER_START:
       return {
         ...state,
         loading: true,
-        error: undefined,
       };
     case Actions.REGISTER_SUCCESS:
       return {
@@ -60,20 +60,36 @@ export function authReducer(
       return {
         ...state,
         loading: false,
-        error: (action as Actions.LoginFailed).payload,
+        error: (action as Actions.RegisterFailed).payload,
+        actionType: '[Register]',
       };
     case Actions.LOGOUT_START ||
       Actions.LOGOUT_SUCCESS ||
       Actions.LOGOUT_FAILED:
       return {
         ...state,
-        error: undefined,
         accessToken: undefined,
       };
     case Actions.SET_IS_LOGGED_IN:
       return {
         ...state,
+        error: undefined,
         isLoggedIn: (action as Actions.SetIsLoggedIn).payload,
+      };
+    case Actions.TOKEN_VALIDATION_START:
+      return {
+        ...state,
+      };
+    case Actions.TOKEN_VALIDATION_SUCCESS:
+      return {
+        ...state,
+        error: undefined,
+      };
+    case Actions.TOKEN_VALIDATION_FAILED:
+      return {
+        ...state,
+        error: (action as Actions.RegisterFailed).payload,
+        actionType: '[Authentication]',
       };
     default:
       return state;

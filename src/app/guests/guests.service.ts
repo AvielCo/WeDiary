@@ -9,95 +9,48 @@ export class GuestsService {
   private readonly url = 'http://localhost:8080/api/guest';
   constructor(private http: HttpClient) {}
 
-  public async postGuest(event: Event, guest: Guest) {
-    return new Promise((resolve, reject) => {
-      this.http
-        .post(`${this.url}/${event._id}`, guest, {
-          responseType: 'text',
-          withCredentials: true,
-        })
-        .subscribe(
-          (res) => {
-            resolve(res);
-          },
-          (error) => {
-            if (error) {
-              reject(error);
-            }
-          }
-        );
-    });
+  public postGuest(eventId: string, guest: Guest) {
+    return this.http.post<{ accessToken: string }>(
+      `${this.url}/${eventId}`,
+      guest,
+      {
+        withCredentials: true,
+      }
+    );
   }
 
-  public fetchGuests(event: Event) {
-    return this.http
-      .get<{ guests: Guest[]; accessToken: string }>(
-        `${this.url}/all/${event._id}`,
-        { withCredentials: true }
-      )
-      .pipe(
-        map((responseData) => {
-          const { accessToken, guests } = responseData;
-          if (accessToken) {
-            window.localStorage.setItem('accessToken', accessToken);
-          }
-          const guestsList: Guest[] = [];
-          for (const key in guests) {
-            const guest = guests[key];
-            guestsList.push(
-              new Guest(
-                guest.name,
-                guest.howMany,
-                guest.comment,
-                guest.howMuch,
-                guest._id
-              )
-            );
-          }
-          guestsList.sort((a: Guest, b: Guest) => {
-            if (a.name < b.name) {
-              return -1;
-            } else if (b.name < a.name) {
-              return 1;
-            }
-            return 0;
-          });
-          return guestsList;
-        })
-      );
+  public fetchGuests(eventId: string) {
+    return this.http.get<{ guests: Guest[]; accessToken: string }>(
+      `${this.url}/all/${eventId}`,
+      { withCredentials: true }
+    );
   }
 
   updateGuest(
-    event: Event,
-    guest: Guest,
-    update: { name?: string; howMany?: Number; howMuch?: Number }
+    eventId: string,
+    guestId: string,
+    update: {
+      name?: string;
+      howMany?: Number;
+      howMuch?: Number;
+      comment?: string;
+    }
   ) {
-    return new Promise((resolve, reject) => {
-      this.http
-        .put(`${this.url}/${event._id}/${guest._id}`, update, {
-          responseType: 'text',
-          withCredentials: true,
-        })
-        .subscribe(
-          (res) => resolve(res),
-          (error) => {
-            if (error) reject(error);
-          }
-        );
-    });
+    return this.http.put<{ accessToken: string }>(
+      `${this.url}/${eventId}/${guestId}`,
+      update,
+      {
+        withCredentials: true,
+      }
+    );
   }
 
-  deleteGuest(event: Event, guest: Guest) {
-    return new Promise((resolve, reject) => {
-      this.http
-        .delete(`${this.url}/${event._id}/${guest._id}`, {
-          responseType: 'text',
-          withCredentials: true,
-        })
-        .subscribe(
-          (res) => resolve(res),
-          (error) => reject(error)
-        );
-    });
+  removeGuest(eventId: string, guestId: string) {
+    return this.http.delete<{ accessToken: string }>(
+      `${this.url}/${eventId}/${guestId}`,
+      {
+        withCredentials: true,
+      }
+    );
   }
 }

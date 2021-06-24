@@ -9,40 +9,31 @@ export class EventsService {
   constructor(private http: HttpClient) {}
 
   public postEvent(event: Event) {
-    return this.http.post(this.url, event, { withCredentials: true });
+    return this.http.post<{ accessToken: string }>(this.url, event, {
+      withCredentials: true,
+    });
   }
 
   public fetchEvents() {
-    return this.http
-      .get<{ events: Event[]; accessToken: string }>(`${this.url}/all`, {
+    return this.http.get<{ events: Event[]; accessToken: string }>(
+      `${this.url}/all`,
+      {
         withCredentials: true,
-      })
-      .pipe(
-        map((responseData) => {
-          const { events, accessToken } = responseData;
-          if (accessToken) {
-            window.localStorage.setItem('accessToken', accessToken);
-          }
-          const eventList: Event[] = [];
-          for (const key in events) {
-            const event = events[key];
-            eventList.push(
-              new Event(
-                event.date,
-                event.location,
-                event.firstPerson,
-                event.secondPerson,
-                event._id,
-                event.guests
-              )
-            );
-          }
-          eventList.sort(
-            (a: Event, b: Event) =>
-              new Date(a.date).getTime() - new Date(b.date).getTime()
-          );
-          return eventList;
-        })
-      );
+      }
+    );
+  }
+
+  public removeEvent(eventId: string) {
+    return this.http.delete<{ accessToken: string }>(`${this.url}/${eventId}`, {
+      withCredentials: true,
+    });
+  }
+
+  public updateEvent(eventId: string, update: {}) {
+    return this.http.put<{ accessToken: string }>(
+      `${this.url}/${eventId}`,
+      update,
+      { withCredentials: true }
+    );
   }
 }

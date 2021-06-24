@@ -12,47 +12,33 @@ import * as fromApp from '@store/index';
   styleUrls: ['./events.component.css'],
 })
 export class EventsComponent implements OnInit {
-  newEvent?: Event;
   eventList?: Event[];
+  newEvent?: Event;
+  eventToDelete?: string;
+  eventToUpdate?: string;
 
-  constructor(
-    private store: Store<fromApp.AppState>,
-    private eventSerivce: EventsService
-  ) {}
+  isLoading: boolean = false;
+
+  constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit() {
-    this.store.select('events').subscribe(async (stateData) => {
-      if (stateData) {
-        if (stateData.newEvent) {
-          await this.addNewEvent(stateData.newEvent);
-          this.getEvents();
-        }
-      }
-    });
     this.getEvents();
-  }
-
-  async addNewEvent(event: Event) {
-    this.eventSerivce.postEvent(event).subscribe(
-      (res) => {
-        console.log('new event added');
-      },
-      (error) => {
-        console.log('Error');
-      }
-    );
-    this.store.dispatch(new EventsActions.StartAddEvent(undefined));
+    this.store.select('events').subscribe(async (stateData) => {
+      this.isLoading = stateData.loading;
+      this.eventList = stateData.events;
+      this.newEvent = stateData.newEvent;
+      this.eventToDelete = stateData.eventToDelete;
+      this.eventToUpdate = stateData.eventToUpdate;
+    });
   }
 
   getEvents() {
-    this.eventSerivce.fetchEvents().subscribe((events) => {
-      this.eventList = events;
-    });
+    this.store.dispatch(new EventsActions.GetEventsStart());
   }
 
-  openGuestsModal(event: Event) {
+  openGuestsModal(eventId: string) {
     this.store.dispatch(
-      new GuestsActions.OpenModal({ toOpen: true, event: event })
+      new GuestsActions.OpenModalStart({ toOpen: true, eventId })
     );
   }
 }
