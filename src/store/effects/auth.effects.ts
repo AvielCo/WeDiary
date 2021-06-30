@@ -65,7 +65,7 @@ export class AuthEffects {
         this.authService
           .register(userData.payload.email, userData.payload.password)
           .pipe(
-            map((res) => {
+            map((_res) => {
               return new AuthActions.RegisterSuccess();
             }),
             catchError((resError: HttpErrorResponse) => {
@@ -101,8 +101,8 @@ export class AuthEffects {
       ofType(AuthActions.LOGOUT_START),
       switchMap(() =>
         this.authService.logout().pipe(
-          map((res) => new AuthActions.LogoutSuccess()),
-          catchError((resError: HttpErrorResponse) => {
+          map((_res) => new AuthActions.LogoutSuccess()),
+          catchError((_resError: HttpErrorResponse) => {
             return of(new AuthActions.LogoutFailed());
           })
         )
@@ -110,17 +110,16 @@ export class AuthEffects {
     )
   );
 
-  logoutSuccess$: any = createEffect(
-    (): any =>
-      this.actions$.pipe(
-        ofType(AuthActions.LOGOUT_SUCCESS),
-        tap(() => {
-          window.localStorage.removeItem('accessToken');
-          window.dispatchEvent(new Event('storage'));
-          this.router.navigate(['/']);
-        })
-      ),
-    { dispatch: false }
+  logoutSuccess$: any = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(AuthActions.LOGOUT_SUCCESS),
+      map((_) => {
+        window.localStorage.removeItem('accessToken');
+        window.dispatchEvent(new Event('storage'));
+        this.router.navigate(['/']);
+        return new AuthActions.SetIsLoggedIn(false);
+      })
+    )
   );
 
   tokenValidation$: any = createEffect((): any =>
