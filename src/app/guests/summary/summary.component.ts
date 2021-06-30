@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { Guest } from 'src/models/guest.model';
+import { Guest } from '@models/guest.model';
 
 @Component({
   selector: 'app-summary',

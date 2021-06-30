@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '@auth/auth.service';
+import { AuthService } from '@services/auth.service';
 import { Store } from '@ngrx/store';
 import * as AuthActions from '@store/actions/auth.actions';
 import * as fromApp from '@store/index';
@@ -11,14 +11,19 @@ import * as fromApp from '@store/index';
 })
 export class AppComponent implements OnInit {
   title = 'WeDiary';
-  isLoggedIn: boolean = false;
+
   constructor(
-    private store: Store<fromApp.AppState>,
-    private authService: AuthService
+    private authService: AuthService,
+    private store: Store<fromApp.AppState>
   ) {}
 
   ngOnInit() {
-    this.validateTokens();
+    const accessToken = this.authService.autoLogin();
+    if (accessToken) {
+      this.store.dispatch(new AuthActions.SetIsLoggedIn(true));
+    } else {
+      this.validateTokens();
+    }
 
     window.addEventListener(
       'storage',
@@ -31,9 +36,6 @@ export class AppComponent implements OnInit {
       },
       false
     );
-    this.store.select('auth').subscribe((res) => {
-      this.isLoggedIn = res.isLoggedIn;
-    });
   }
 
   validateTokens() {

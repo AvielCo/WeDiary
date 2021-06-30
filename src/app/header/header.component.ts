@@ -9,22 +9,16 @@ import { Subscription } from 'rxjs';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   storeSub?: Subscription;
 
   constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit(): void {
-    this.storeSub = this.store.select('auth').subscribe((res) => {
-      this.isLoggedIn = res.isLoggedIn;
+    this.store.select('auth').subscribe((authState) => {
+      this.isLoggedIn = authState.isLoggedIn;
     });
-  }
-
-  ngOnDestroy() {}
-
-  openAuthModal() {
-    this.store.dispatch(new Actions.OpenModal());
   }
 
   logout() {

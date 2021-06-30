@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Modal } from 'bootstrap';
+import { Guest } from '@models/guest.model';
 import * as fromApp from '@store/index';
 import * as GuestsActions from '@store/actions/guest.actions';
-import { Event as EventModel } from 'src/models/event.model';
-import { GuestsService } from './guests.service';
-import { Guest } from '../../models/guest.model';
-import { multicast } from 'rxjs/operators';
 
 @Component({
   selector: 'app-guests',
@@ -14,7 +10,6 @@ import { multicast } from 'rxjs/operators';
   styleUrls: ['./guests.component.css'],
 })
 export class GuestsComponent implements OnInit {
-  private modalElement?: Modal;
   private eventId?: string;
   private changes: {
     name?: string;
@@ -35,25 +30,33 @@ export class GuestsComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit(): void {
+    this.getGuests();
     this.store.select('guests').subscribe((stateData) => {
-      const { isModalOpen } = stateData;
-      if (isModalOpen) {
-        this.modalElement!.show();
-      }
       this.isLoading = stateData.loading;
-      this.eventId = stateData.eventId;
       this.guestsList = stateData.guests;
       this.newGuest = stateData.newGuest;
       this.guestToDelete = stateData.guestToDelete;
       this.guestToUpdate = stateData.guestToUpdate;
     });
-    this.modalElement = new Modal(document.getElementById('guestsModal')!);
   }
 
-  toggleModal() {
-    this.selectedRow = -1;
+  handleSubmit(index: number) {
+    this.updateGuest(index);
+  }
+
+  openEditForRow(index: number) {
+    if (index !== -1) {
+      if (index === this.activeEditRow) {
+        this.activeEditRow = -1;
+        return;
+      }
+      //is editing
+      this.activeEditRow = index;
+      this.addingMode = false;
+      return;
+    }
     this.activeEditRow = -1;
-    this.modalElement!.toggle();
+    this.addingMode = true;
   }
 
   onChange(e: Event) {
@@ -66,12 +69,7 @@ export class GuestsComponent implements OnInit {
 
   addNewGuest() {
     const { name, howMany, howMuch, comment } = this.changes;
-    if (!name || !howMany) {
-      alert('Name and How many are required.');
-      return;
-    }
-
-    const newGuest = new Guest(name, howMany, comment, howMuch);
+    const newGuest = new Guest(name!, howMany!, comment, howMuch);
 
     this.store.dispatch(
       new GuestsActions.AddGuestStart({
@@ -96,15 +94,17 @@ export class GuestsComponent implements OnInit {
   }
 
   updateGuest(index: number) {
-    const { name, howMany } = this.changes;
+    const changes = { ...this.changes };
+    this.changes = {};
+    this.activeEditRow = -1;
+    const { name, howMany } = changes;
     if (name?.length == 0 || howMany?.valueOf() == 0) {
       alert('Name and How many are required.');
       return;
     }
 
     const guest: Guest = this.guestsList![index];
-    if (guest.equal(this.changes)) {
-      this.toggleEditGuest(-1);
+    if (guest.equal(changes)) {
       return;
     }
 
@@ -112,46 +112,8 @@ export class GuestsComponent implements OnInit {
       new GuestsActions.UpdateGuestStart({
         guestId: guest._id!,
         eventId: this.eventId!,
-        update: this.changes,
+        update: changes,
       })
     );
-  }
-
-  changeMode(mode?: string, index?: number) {
-    switch (mode) {
-      case 'add':
-        this.selectedRow = -1;
-        this.activeEditRow = -1;
-        this.toggleAddingMode();
-        break;
-      case 'edit':
-        this.addingMode = false;
-        this.toggleEditGuest(index!);
-        break;
-      case 'add-cancel':
-        this.toggleAddingMode();
-        break;
-      case 'edit-cancel':
-        this.changeSelectedRow(-1);
-        break;
-      default:
-        this.changeMode('add-cancel');
-        this.changeMode('edit-cancel');
-        break;
-    }
-    this.changes = {};
-  }
-
-  changeSelectedRow(index: number) {
-    this.selectedRow = index;
-    this.toggleEditGuest(-1);
-  }
-
-  toggleEditGuest(index: number) {
-    this.activeEditRow = index;
-  }
-
-  toggleAddingMode() {
-    this.addingMode = !this.addingMode;
   }
 }

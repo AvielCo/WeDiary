@@ -1,3 +1,7 @@
+nbg-tooltip-window.tooltip {
+  background-color: black;
+}
+
 .input-wrap {
   position: relative;
 }
@@ -36,4 +40,28 @@ input::-webkit-inner-spin-button {
 .textarea[contenteditable]:empty::before {
   content: "Write a comment";
   color: gray;
+}
+
+.form-check-input {
+  margin-left: 0;
+}
+
+table.table-fit {
+  width: auto !important;
+  table-layout: auto !important;
+  min-width: 70%;
+}
+table.table-fit thead th,
+table.table-fit tfoot th {
+  width: auto !important;
+}
+table.table-fit tbody td,
+table.table-fit tfoot td {
+  width: auto !important;
+}
+
+.table-responsive {
+  display: flex;
+  justify-content: center;
+  color: black;
 }

@@ -1,0 +1,10 @@
+.btn-add-event {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  bottom: 20px;
+  right: 20px;
+}
+.btn-add-event > span {
+  font-size: 2.2rem;
+}

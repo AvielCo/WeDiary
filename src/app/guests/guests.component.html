@@ -1,297 +1,115 @@
-<div
-  class="modal fade"
-  id="guestsModal"
-  tabindex="-1"
-  aria-labelledby="guestsModal"
-  aria-hidden="true"
->
-  <div
-    class="modal-dialog modal-lg"
-    [ngStyle]="{ 'pointer-events': isLoading ? 'none' : 'auto' }"
-  >
-    <div class="loading" *ngIf="isLoading">
-      <app-loading-spinner></app-loading-spinner>
-    </div>
-    <div
-      class="modal-content"
-      [ngStyle]="{ 'pointer-events': isLoading ? 'none' : 'auto' }"
+<div class="modal-header">
+  <h5 class="modal-title">
+    <span> Guests </span>
+  </h5>
+</div>
+<div class="modal-body">
+  <div class="table-responsive" [style]="{ 'overflow-x': 'clip' }">
+    <table
+      class="table table-hover table-borderless"
+      [style]="{ 'border-collapse': 'unset' }"
     >
-      <div class="modal-header">
-        <h5 class="modal-title">
-          <span> Guests </span>
-        </h5>
+      <thead>
+        <tr>
+          <td></td>
+          <td class="text-start">Name</td>
+          <td class="text-end">How many</td>
+          <td class="text-end">Gifted</td>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Content of the table -->
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-          (click)="toggleModal()"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <!-- Action buttons -->
-
-        <ng-template [ngIf]="!addingMode" [ngIfElse]="acceptMode">
-          <!-- Add button will add another row to the table in edit mode -->
-          <button
-            class="btn btn-outline-primary me-2"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="Add guest"
-            (click)="changeMode('add')"
-          >
-            <i class="bi bi-plus-square"></i>
-            Add
-          </button>
-        </ng-template>
-
-        <ng-template #acceptMode>
-          <div class="btn-group me-2" role="group">
-            <button
-              class="btn btn-outline-primary"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Submit new guest details"
-              (click)="addNewGuest()"
+        <!-- Render list of guests only if there is at least one guest -->
+        <ng-template [ngIf]="guestsList && guestsList.length > 0">
+          <ng-container *ngFor="let guest of guestsList; let i = index">
+            <tr
+              ngbTooltip="{{ guest.comment }}"
+              [closeDelay]="400"
+              [openDelay]="250"
+              container="body"
+              (click)="openEditForRow(i)"
+              [style]="{ cursor: 'pointer' }"
             >
-              <i class="bi bi-check2-square"></i>
-              Submit
-            </button>
+              <td>
+                <a *ngIf="i != activeEditRow; else edittingRow"
+                  ><i class="bi bi-arrow-right"></i
+                ></a>
 
-            <button
-              class="btn btn-outline-primary"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Abort adding guest"
-              (click)="changeMode('add-cancel')"
+                <ng-template #edittingRow>
+                  <a><i class="bi bi-arrow-down"></i></a>
+                </ng-template>
+              </td>
+              <td class="text-start">{{ guest.name }}</td>
+              <td class="text-end">{{ guest.howMany }}</td>
+              <td class="text-end">{{ guest.howMuch }}</td>
+            </tr>
+            <!-- Inner table, open on double click on row -->
+            <tr
+              class="table-borderless table-info"
+              [ngStyle]="{
+                visibility: i != activeEditRow ? 'hidden' : 'visible'
+              }"
             >
-              <i class="bi bi-x-square"></i>
-              Cancel
-            </button>
-          </div>
-        </ng-template>
-
-        <!-- This will be active when selected row is not -1 (a row is selected)
-              AND the edit button has not been clicked -->
-        <ng-template [ngIf]="selectedRow != -1 && activeEditRow == -1">
-          <div class="btn-group" role="group">
-            <!-- Edit button will be visible only if a guest is marked (with radio button) -->
-            <button
-              class="btn btn-outline-primary"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Edit guest"
-              (click)="changeMode('edit', selectedRow)"
-            >
-              <i class="bi bi-pencil-square"></i>
-              Edit
-            </button>
-            <!-- Remove button will be visible only if a guest is marked (with radio button) -->
-            <button
-              class="btn btn-outline-primary"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Remove guest"
-              (click)="removeGuest(selectedRow)"
-            >
-              <i class="bi bi-trash"></i>
-              Delete
-            </button>
-          </div>
-        </ng-template>
-
-        <!-- This will be active ONLY when edit button has been clicked -->
-        <ng-template [ngIf]="activeEditRow != -1">
-          <div class="btn-group" role="group">
-            <button
-              class="btn btn-outline-primary"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Save changes"
-              (click)="updateGuest(selectedRow)"
-            >
-              <i class="bi bi-check2-square"></i>
-              Save
-            </button>
-            <button
-              class="btn btn-outline-primary"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Cancel changes"
-              (click)="changeMode('edit-cancel')"
-            >
-              <i class="bi bi-x-square"></i>
-              Cancel
-            </button>
-          </div>
-        </ng-template>
-        <div class="table-responsive">
-          <table class="table table-hover table-borderless">
-            <thead>
-              <tr>
-                <td></td>
-                <td class="text-start">Name</td>
-                <td class="text-start">Comment</td>
-                <td class="text-end">How many</td>
-                <td class="text-end">Gifted</td>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Content of the table -->
-
-              <!-- Render list of guests only if there is at least one guest -->
-              <ng-template [ngIf]="guestsList && guestsList.length > 0">
-                <tr *ngFor="let guest of guestsList; let i = index">
-                  <td scope="row">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="selectedRowRadio"
-                      id="selectedRowRadio"
-                      [checked]="selectedRow >= 0 && i == selectedRow"
-                      (input)="changeSelectedRow(i)"
-                    />
-                  </td>
-
-                  <ng-container
-                    *ngIf="
-                      activeEditRow != i;
-                      then editModeDeactivated;
-                      else editModeActivated
-                    "
-                  ></ng-container>
-
-                  <ng-template #editModeDeactivated>
-                    <td class="text-start">{{ guest.name }}</td>
-                    <td class="text-start">{{ guest.comment }}</td>
-                    <td class="text-end">{{ guest.howMany }}</td>
-                    <td class="text-end">{{ guest.howMuch }}</td>
-                  </ng-template>
-
-                  <ng-template #editModeActivated>
-                    <td class="text-start">
-                      <span class="input-wrap">
-                        <span class="width-machine" aria-hidden="true">{{
-                          guest.name
-                        }}</span>
+              <td colspan="4">
+                <div
+                  [ngbCollapse]="i != activeEditRow"
+                  [animation]="true"
+                  class="collapse navbar-collapse"
+                >
+                  <p>
+                    Change any value, when you done, hit enter to save changes.
+                  </p>
+                  <form (ngSubmit)="handleSubmit(i)">
+                    <div class="row mb-2">
+                      <div class="col">
                         <input
-                          class="input"
                           type="text"
-                          value="{{ guest.name }}"
                           name="name"
+                          placeholder="Name"
                           (input)="onChange($event)"
                         />
-                      </span>
-                    </td>
-                    <td class="text-start">
+                      </div>
+                      <div class="col">
+                        <input
+                          type="number"
+                          name="howMany"
+                          placeholder="How many"
+                          (input)="onChange($event)"
+                        />
+                      </div>
+                      <div class="col">
+                        <input
+                          type="number"
+                          name="howMuch"
+                          placeholder="Gifted"
+                          (input)="onChange($event)"
+                        />
+                      </div>
+                    </div>
+                    <div>
                       <textarea
-                        placeholder="Write a comment"
+                        placeholder="Comment"
+                        style="width: 100%"
                         name="comment"
-                        [value]="guest.comment"
                         (input)="onChange($event)"
                       ></textarea>
-                    </td>
-                    <td class="text-end">
-                      <span class="input-wrap">
-                        <span class="width-machine" aria-hidden="true">{{
-                          guest.howMany
-                        }}</span>
-                        <input
-                          class="input number"
-                          type="number"
-                          value="{{ guest.howMany }}"
-                          name="howMany"
-                          (input)="onChange($event)"
-                        />
-                      </span>
-                    </td>
-                    <td class="text-end">
-                      <span class="input-wrap">
-                        <span class="width-machine" aria-hidden="true">{{
-                          guest.howMuch
-                        }}</span>
-                        <input
-                          class="input number"
-                          type="number"
-                          value="{{ guest.howMuch }}"
-                          name="howMuch"
-                          (input)="onChange($event)"
-                        />
-                      </span>
-                    </td>
-                  </ng-template>
-                </tr>
-              </ng-template>
-
-              <!-- If addingMode is true, show text input in a new line inside the table.
-                   also, show a button that would submit the data to the server. -->
-              <tr *ngIf="addingMode">
-                <!-- Placeholder for the radio button column -->
-                <td></td>
-
-                <!-- Name of the guest, required -->
-                <td class="text-start">
-                  <span class="input-wrap">
-                    <span class="width-machine" aria-hidden="true"> Name </span>
-                    <input
-                      class="input"
-                      type="text"
-                      name="name"
-                      placeholder="Name"
-                      (input)="onChange($event)"
-                    />
-                  </span>
-                </td>
-
-                <!-- Comment about the guest, can be null/empty -->
-                <td class="text-start">
-                  <textarea
-                    placeholder="Write a comment"
-                    name="comment"
-                    (input)="onChange($event)"
-                  ></textarea>
-                </td>
-
-                <!-- How many people will come, required -->
-                <td class="text-end">
-                  <span class="input-wrap">
-                    <span class="width-machine" aria-hidden="true">
-                      Amount
-                    </span>
-                    <input
-                      placeholder="Amount"
-                      class="input number"
-                      type="number"
-                      name="howMany"
-                      (input)="onChange($event)"
-                    />
-                  </span>
-                </td>
-
-                <!-- How much this guest gifted, can be null/empty -->
-                <td class="text-end">
-                  <span class="input-wrap">
-                    <span class="width-machine" aria-hidden="true">
-                      Amount
-                    </span>
-                    <input
-                      placeholder="Amount"
-                      class="input number"
-                      type="number"
-                      name="howMuch"
-                      (input)="onChange($event)"
-                    />
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <app-summary [guestsList]="guestsList"></app-summary>
-        </div>
-      </div>
-    </div>
+                    </div>
+                    <input type="submit" class="btn d-none" />
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <app-summary [guestsList]="guestsList"></app-summary>
   </div>
 </div>
+
+<!-- <div class="loading" *ngIf="isLoading">
+      <app-loading-spinner></app-loading-spinner>
+    </div> -->

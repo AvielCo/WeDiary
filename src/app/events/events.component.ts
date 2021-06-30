@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Event } from 'src/models/event.model';
-import { EventsService } from '@events/events.service';
+import { Event } from '@models/event.model';
 import * as EventsActions from '@store/actions/event.actions';
-import * as GuestsActions from '@store/actions/guest.actions';
 import * as fromApp from '@store/index';
 
 @Component({
@@ -34,11 +32,5 @@ export class EventsComponent implements OnInit {
 
   getEvents() {
     this.store.dispatch(new EventsActions.GetEventsStart());
-  }
-
-  openGuestsModal(eventId: string) {
-    this.store.dispatch(
-      new GuestsActions.OpenModalStart({ toOpen: true, eventId })
-    );
   }
 }

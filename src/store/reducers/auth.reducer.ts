@@ -1,8 +1,6 @@
 import * as Actions from '@store/actions/auth.actions';
 
 export interface State {
-  isModalOpen: boolean;
-  accessToken?: string;
   error?: string;
   actionType?: string;
   loading: boolean;
@@ -10,7 +8,6 @@ export interface State {
 }
 
 const initialState: State = {
-  isModalOpen: false,
   loading: false,
   isLoggedIn: false,
 };
@@ -20,11 +17,6 @@ export function authReducer(
   action: Actions.AuthActions
 ): State {
   switch (action.type) {
-    case Actions.OPEN_MODAL || Actions.CLOSE_MODAL:
-      return {
-        ...state,
-        isModalOpen: (action as Actions.OpenModal | Actions.CloseModal).payload,
-      };
     case Actions.LOGIN_START:
       return {
         ...state,
@@ -35,7 +27,7 @@ export function authReducer(
         ...state,
         loading: false,
         error: undefined,
-        accessToken: (action as Actions.LoginSuccess).payload,
+        isLoggedIn: true,
       };
     case Actions.LOGIN_FAILED:
       return {
@@ -43,7 +35,7 @@ export function authReducer(
         loading: false,
         error: (action as Actions.RegisterFailed).payload,
         actionType: 'login',
-        accessToken: undefined,
+        isLoggedIn: false,
       };
     case Actions.REGISTER_START:
       return {
@@ -68,7 +60,6 @@ export function authReducer(
       Actions.LOGOUT_FAILED:
       return {
         ...state,
-        accessToken: undefined,
       };
     case Actions.SET_IS_LOGGED_IN:
       return {
@@ -89,7 +80,7 @@ export function authReducer(
       return {
         ...state,
         error: (action as Actions.RegisterFailed).payload,
-        actionType: '[Authentication]',
+        actionType: 'Authentication',
       };
     default:
       return state;

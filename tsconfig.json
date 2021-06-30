@@ -18,12 +18,19 @@
     "module": "es2020",
     "lib": ["es2018", "dom"],
     "paths": {
-      "@store/*": ["src/app/store/*"],
-      "@header/*": ["src/app/header/*"],
+      "@app-component": ["src/app/app.component"],
       "@auth/*": ["src/app/auth/*"],
       "@events/*": ["src/app/events/*"],
       "@events/add/*": ["src/app/events/add/*"],
-      "@guests/*": ["src/app/guests/*"]
+      "@guests/*": ["src/app/guests/*"],
+      "@header/*": ["src/app/header/*"],
+      "@home/*": ["src/app/home/*"],
+      "@page-not-found/*": ["src/app/page-not-found/*"],
+      "@models/*": ["src/models/*"],
+      "@routing-module": ["src/app/app-routing.module"],
+      "@services/*": ["src/services/*"],
+      "@shared/*": ["src/shared/*"],
+      "@store/*": ["src/store/*"]
     }
   },
   "angularCompilerOptions": {

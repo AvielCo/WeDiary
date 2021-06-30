@@ -24,18 +24,6 @@ export function guestsReducer(
   action: Actions.GuestActions
 ): State {
   switch (action.type) {
-    case Actions.OPEN_MODAL:
-      return {
-        ...state,
-        isModalOpen: true,
-        eventId: (action as Actions.OpenModalStart).payload.eventId,
-      };
-    case Actions.CLOSE_MODAL:
-      return {
-        ...state,
-        isModalOpen: false,
-        eventId: undefined,
-      };
     case Actions.ADD_GUEST_START:
       return {
         ...state,

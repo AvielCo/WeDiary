@@ -1,11 +1,3 @@
 <app-header></app-header>
-
-<app-auth></app-auth>
 <app-alert></app-alert>
-
-<ng-template [ngIf]="isLoggedIn" [ngIfElse]="notLoggedIn">
-  <app-guests></app-guests>
-  <app-events></app-events>
-  <app-add></app-add>
-</ng-template>
-<ng-template #notLoggedIn> You are not logged in! </ng-template>
+<router-outlet></router-outlet>

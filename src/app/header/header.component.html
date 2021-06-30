@@ -3,14 +3,19 @@
     <span class="navbar-brand mb-0 h1">WeDairy</span>
     <div class="d-flex me-2" role="group">
       <ng-template [ngIf]="!isLoggedIn" [ngIfElse]="loggedIn">
-        <button type="button" class="btn btn-dark" (click)="openAuthModal()">
+        <a type="button" class="btn btn-dark" [routerLink]="['/login']">
           Login
-        </button>
+        </a>
       </ng-template>
       <ng-template #loggedIn>
-        <button type="button" class="btn btn-dark" (click)="logout()">
+        <a
+          type="button"
+          class="btn btn-dark"
+          [routerLink]="['']"
+          (click)="logout()"
+        >
           Logout
-        </button>
+        </a>
       </ng-template>
     </div>
   </div>

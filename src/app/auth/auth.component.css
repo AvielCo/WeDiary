@@ -1,0 +1,12 @@
+.needs-validation {
+  margin: 0 auto;
+  width: 50%;
+}
+
+.display-6 {
+  width: fit-content;
+}
+
+.rememberme {
+  align-self: flex-end;
+}

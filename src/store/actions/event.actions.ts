@@ -22,12 +22,10 @@ export class AddEventStart implements Action {
 
   constructor(public payload?: Event) {}
 }
-
 export class AddEventSuccess implements Action {
   readonly type: string = ADD_EVENT_SUCCESS;
-  constructor(public payload: string) {} // accessToken
+  constructor(public payload: { accessToken: string; expireDate: number }) {} // accessToken
 }
-
 export class AddEventFail implements Action {
   readonly type: string = ADD_EVENT_FAIL;
 
@@ -37,12 +35,15 @@ export class AddEventFail implements Action {
 export class GetEventsStart implements Action {
   readonly type: string = GET_EVENTS_START;
 }
-
 export class GetEventsSuccess implements Action {
   readonly type: string = GET_EVENTS_SUCCESS;
-  constructor(public payload: { events: Event[]; accessToken: string }) {}
+  constructor(
+    public payload: {
+      events: Event[];
+      at: { accessToken: string; expireDate: number };
+    }
+  ) {}
 }
-
 export class GetEventsFail implements Action {
   readonly type: string = GET_EVENTS_FAIL;
   constructor(public payload: string) {} // error
@@ -52,29 +53,25 @@ export class RemoveEventStart implements Action {
   readonly type: string = REMOVE_EVENT_START;
   constructor(public payload: string) {} //event id
 }
-
 export class RemoveEventSuccess implements Action {
-  readonly type: string = REMOVE_EVENT_START;
-  constructor(public payload: string) {} // accessToken
+  readonly type: string = REMOVE_EVENT_SUCCESS;
+  constructor(public payload: { accessToken: string; expireDate: number }) {} // accessToken
 }
-
 export class RemoveEventFail implements Action {
-  readonly type: string = REMOVE_EVENT_START;
+  readonly type: string = REMOVE_EVENT_FAIL;
   constructor(public payload: string) {} //error
 }
 
 export class UpdateEventStart implements Action {
-  readonly type: string = REMOVE_EVENT_START;
+  readonly type: string = UPDATE_EVENT_START;
   constructor(public payload: { eventId: string; update: {} }) {} //event id
 }
-
 export class UpdateEventSuccess implements Action {
-  readonly type: string = REMOVE_EVENT_START;
-  constructor(public payload: string) {} //accessToken
+  readonly type: string = UPDATE_EVENT_SUCCESS;
+  constructor(public payload: { accessToken: string; expireDate: number }) {} //accessToken
 }
-
 export class UpdateEventFail implements Action {
-  readonly type: string = REMOVE_EVENT_START;
+  readonly type: string = UPDATE_EVENT_FAIL;
   constructor(public payload: string) {} //error
 }
 

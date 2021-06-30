@@ -1,5 +1,5 @@
-import { Guest } from './guest.model';
-import { Person } from './person.model';
+import { Guest } from '@models/guest.model';
+import { Person } from '@models/person.model';
 
 export class Event {
   constructor(

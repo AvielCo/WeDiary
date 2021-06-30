@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Event } from 'src/models/event.model';
-import { map } from 'rxjs/operators';
+import { Event } from '@models/event.model';
 
 @Injectable({ providedIn: 'root' })
 export class EventsService {
@@ -9,28 +8,34 @@ export class EventsService {
   constructor(private http: HttpClient) {}
 
   public postEvent(event: Event) {
-    return this.http.post<{ accessToken: string }>(this.url, event, {
-      withCredentials: true,
-    });
-  }
-
-  public fetchEvents() {
-    return this.http.get<{ events: Event[]; accessToken: string }>(
-      `${this.url}/all`,
+    return this.http.post<{ at: { accessToken: string; expireDate: number } }>(
+      this.url,
+      event,
       {
         withCredentials: true,
       }
     );
   }
 
+  public fetchEvents() {
+    return this.http.get<{
+      events: Event[];
+      at: { accessToken: string; expireDate: number };
+    }>(`${this.url}/all`, {
+      withCredentials: true,
+    });
+  }
+
   public removeEvent(eventId: string) {
-    return this.http.delete<{ accessToken: string }>(`${this.url}/${eventId}`, {
+    return this.http.delete<{
+      at: { accessToken: string; expireDate: number };
+    }>(`${this.url}/${eventId}`, {
       withCredentials: true,
     });
   }
 
   public updateEvent(eventId: string, update: {}) {
-    return this.http.put<{ accessToken: string }>(
+    return this.http.put<{ at: { accessToken: string; expireDate: number } }>(
       `${this.url}/${eventId}`,
       update,
       { withCredentials: true }

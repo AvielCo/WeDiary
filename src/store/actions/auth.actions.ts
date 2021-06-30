@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 
 export interface User {
@@ -24,21 +23,6 @@ export const TOKEN_VALIDATION_FAILED = '[Auth] token validation failed';
 
 export const SET_IS_LOGGED_IN = '[Auth] is logged in';
 
-export const OPEN_MODAL = '[Auth] open modal';
-export const CLOSE_MODAL = '[Auth] close modal';
-
-export class OpenModal implements Action {
-  readonly type: string = OPEN_MODAL;
-
-  constructor(public payload: boolean = true) {}
-}
-
-export class CloseModal implements Action {
-  readonly type: string = CLOSE_MODAL;
-
-  constructor(public payload: boolean = false) {}
-}
-
 export class SetIsLoggedIn implements Action {
   readonly type: string = SET_IS_LOGGED_IN;
   constructor(public payload: boolean) {}
@@ -47,11 +31,13 @@ export class SetIsLoggedIn implements Action {
 // Login
 export class LoginStart implements Action {
   readonly type: string = LOGIN_START;
-  constructor(public payload: { email: string; password: string }) {}
+  constructor(
+    public payload: { email: string; password: string; close: any }
+  ) {}
 }
 export class LoginSuccess implements Action {
   readonly type: string = LOGIN_SUCCESS;
-  constructor(public payload: string) {}
+  constructor(public payload: { accessToken: string; expireDate: number }) {}
 }
 export class LoginFailed implements Action {
   readonly type: string = LOGIN_FAILED;
@@ -94,8 +80,6 @@ export class TokenValidationFailed implements Action {
 }
 
 export type AuthActions =
-  | OpenModal
-  | CloseModal
   | LoginStart
   | LoginSuccess
   | LoginFailed

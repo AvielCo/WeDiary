@@ -13,12 +13,22 @@
             <h6 class="card-subtitle text-muted mb-2">
               {{ event.date | date }} | {{ event.location }}
             </h6>
-            <button class="btn btn-dark" (click)="openGuestsModal(event._id!)">
+            <a class="btn btn-dark" [routerLink]="[event._id, 'guests']">
               Guests
-            </button>
+            </a>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+<router-outlet></router-outlet>
+<a
+  class="btn btn-primary rounded-circle circle btn-add-event"
+  data-bs-toggle="tooltip"
+  data-bs-placement="top"
+  title="Add a new event"
+  [routerLink]="['add']"
+>
+  <span>+</span>
+</a>

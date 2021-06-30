@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Event } from 'src/models/event.model';
-import { Guest } from 'src/models/guest.model';
-import { map } from 'rxjs/operators';
+import { Guest } from '@models/guest.model';
 
 @Injectable({ providedIn: 'root' })
 export class GuestsService {
@@ -10,7 +8,7 @@ export class GuestsService {
   constructor(private http: HttpClient) {}
 
   public postGuest(eventId: string, guest: Guest) {
-    return this.http.post<{ accessToken: string }>(
+    return this.http.post<{ at: { accessToken: string; expireDate: number } }>(
       `${this.url}/${eventId}`,
       guest,
       {
@@ -20,10 +18,10 @@ export class GuestsService {
   }
 
   public fetchGuests(eventId: string) {
-    return this.http.get<{ guests: Guest[]; accessToken: string }>(
-      `${this.url}/all/${eventId}`,
-      { withCredentials: true }
-    );
+    return this.http.get<{
+      guests: Guest[];
+      at: { accessToken: string; expireDate: number };
+    }>(`${this.url}/all/${eventId}`, { withCredentials: true });
   }
 
   updateGuest(
@@ -36,7 +34,7 @@ export class GuestsService {
       comment?: string;
     }
   ) {
-    return this.http.put<{ accessToken: string }>(
+    return this.http.put<{ at: { accessToken: string; expireDate: number } }>(
       `${this.url}/${eventId}/${guestId}`,
       update,
       {
@@ -46,11 +44,10 @@ export class GuestsService {
   }
 
   removeGuest(eventId: string, guestId: string) {
-    return this.http.delete<{ accessToken: string }>(
-      `${this.url}/${eventId}/${guestId}`,
-      {
-        withCredentials: true,
-      }
-    );
+    return this.http.delete<{
+      at: { accessToken: string; expireDate: number };
+    }>(`${this.url}/${eventId}/${guestId}`, {
+      withCredentials: true,
+    });
   }
 }

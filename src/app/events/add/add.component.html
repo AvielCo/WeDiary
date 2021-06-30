@@ -1,164 +1,124 @@
-<div>
-  <div
-    class="modal fade"
-    id="addEventModal"
-    tabindex="-1"
-    aria-labelledby="addEventModal"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addEventModal">
-            <span> Add an event </span>
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-            (click)="toggleModal()"
-          ></button>
-        </div>
-        <form
-          class="needs-validation"
-          novalidate
-          #authForm="ngForm"
-          (ngSubmit)="onSubmit(authForm)"
-        >
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-xs-12">
-                <div class="form-group">
-                  <div class="form-floating mb-3">
-                    <input
-                      type="date"
-                      id="date"
-                      class="form-control"
-                      name="date"
-                      ngModel
-                      required
-                    />
-                    <label for="date">Date</label>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input
-                      type="text"
-                      id="location"
-                      class="form-control"
-                      placeholder="Location"
-                      name="location"
-                      ngModel
-                      required
-                    />
-                    <label for="location">Location</label>
-                  </div>
+<div class="modal-header">
+  <h5 class="modal-title" id="addEventModal">
+    <span> Add an event </span>
+  </h5>
+</div>
+<form
+  class="needs-validation"
+  novalidate
+  #authForm="ngForm"
+  (ngSubmit)="onSubmit(authForm)"
+>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="form-group">
+          <div class="form-floating mb-3">
+            <input
+              type="date"
+              id="date"
+              class="form-control"
+              name="date"
+              ngModel
+              required
+            />
+            <label for="date">Date</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              id="location"
+              class="form-control"
+              placeholder="Location"
+              name="location"
+              ngModel
+              required
+            />
+            <label for="location">Location</label>
+          </div>
 
-                  <div class="row mb-3">
-                    <div class="col">
-                      <div class="form-floating">
-                        <input
-                          type="text"
-                          id="p1name"
-                          class="form-control"
-                          placeholder="Person #1 name"
-                          name="fpname"
-                          ngModel
-                          required
-                        />
-                        <label for="p1name">Person #1 name</label>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <div class="form-floating">
-                        <select
-                          id="p1gender"
-                          class="form-select"
-                          placeholder="Person #1 gender"
-                          name="fpgender"
-                          ngModel
-                          required
-                        >
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
-                        </select>
-                        <label for="p1gender">Person #1 gender</label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="col">
-                      <div class="form-floating">
-                        <input
-                          type="text"
-                          id="p2name"
-                          class="form-control"
-                          placeholder="Person #2 name"
-                          name="spname"
-                          ngModel
-                          required
-                        />
-                        <label for="p2name">Person #2 name</label>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <div class="form-floating">
-                        <select
-                          id="p2gender"
-                          class="form-select"
-                          placeholder="Person #2 gender"
-                          name="spgender"
-                          ngModel
-                          required
-                        >
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
-                        </select>
-                        <label for="p2gender">Person #2 gender</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12"></div>
+          <div class="row mb-3">
+            <div class="col">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  id="p1name"
+                  class="form-control"
+                  placeholder="Person #1 name"
+                  name="fpname"
+                  ngModel
+                  required
+                />
+                <label for="p1name">Person #1 name</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating">
+                <select
+                  id="p1gender"
+                  class="form-select"
+                  placeholder="Person #1 gender"
+                  name="fpgender"
+                  ngModel
+                  required
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+                <label for="p1gender">Person #1 gender</label>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <div>
-              <button
-                type="button"
-                class="btn btn-secondary me-3"
-                data-bs-dismiss="modal"
-                (click)="toggleModal()"
-              >
-                Close
-              </button>
-              <button
-                class="btn btn-primary"
-                type="submit"
-                [disabled]="!authForm.valid"
-              >
-                <span style="text-transform: capitalize"> Submit </span>
-              </button>
+
+          <div class="row mb-3">
+            <div class="col">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  id="p2name"
+                  class="form-control"
+                  placeholder="Person #2 name"
+                  name="spname"
+                  ngModel
+                  required
+                />
+                <label for="p2name">Person #2 name</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating">
+                <select
+                  id="p2gender"
+                  class="form-select"
+                  placeholder="Person #2 gender"
+                  name="spgender"
+                  ngModel
+                  required
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+                <label for="p2gender">Person #2 gender</label>
+              </div>
             </div>
           </div>
-        </form>
+        </div>
+
+        <div class="col-12"></div>
       </div>
     </div>
   </div>
-  <div class="anchored-bottom-end">
-    <button
-      class="btn btn-primary rounded-circle circle"
-      data-bs-toggle="tooltip"
-      data-bs-placement="top"
-      title="Add a new event"
-      (click)="toggleModal()"
-    >
-      <span>+</span>
-    </button>
+  <div class="modal-footer">
+    <div>
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="!authForm.valid"
+      >
+        <span style="text-transform: capitalize"> Submit </span>
+      </button>
+    </div>
   </div>
-</div>
+</form>

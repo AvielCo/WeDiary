@@ -1,17 +1,16 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from '@auth/auth.service';
+import { AuthService } from 'src/services/auth.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import * as AuthActions from '@store/actions/auth.actions';
 import { of } from 'rxjs';
-import { switchMap, map, catchError, tap, mergeMap } from 'rxjs/operators';
-import { setAccessToken } from 'src/shared/set-access-token';
-import * as fromApp from '@store/index';
+import { switchMap, map, catchError, tap } from 'rxjs/operators';
+import { setAccessToken } from 'src/shared/access-token';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthEffects {
-  authLogin$: any = createEffect((): any =>
+  loginStart$: any = createEffect((): any =>
     this.actions$.pipe(
       ofType(AuthActions.LOGIN_START),
       switchMap((userData: AuthActions.LoginStart) =>
@@ -19,7 +18,7 @@ export class AuthEffects {
           .login(userData.payload.email, userData.payload.password)
           .pipe(
             map((res) => {
-              return new AuthActions.LoginSuccess(res.accessToken);
+              return new AuthActions.LoginSuccess(res.at);
             }),
             catchError((resError: HttpErrorResponse) => {
               let error;
@@ -44,15 +43,22 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.LOGIN_SUCCESS),
-        tap((res: { payload: string; type: string }) => {
-          window.dispatchEvent(new Event('storage'));
-          setAccessToken(res.payload);
-        })
+        tap(
+          (res: {
+            payload: { accessToken: string; expireDate: number };
+            type: string;
+          }) => {
+            setAccessToken(res.payload);
+            window.dispatchEvent(new Event('storage'));
+            this.router.navigate(['/events']);
+            this.authService.autoLogout(5000);
+          }
+        )
       ),
     { dispatch: false }
   );
 
-  authRegister$: any = createEffect((): any =>
+  registerStart$: any = createEffect((): any =>
     this.actions$.pipe(
       ofType(AuthActions.REGISTER_START),
       switchMap((userData: AuthActions.RegisterStart) =>
@@ -81,6 +87,15 @@ export class AuthEffects {
     )
   );
 
+  registerSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.REGISTER_SUCCESS),
+        tap(() => this.router.navigate(['/login']))
+      ),
+    { dispatch: false }
+  );
+
   authLogout$: any = createEffect((): any =>
     this.actions$.pipe(
       ofType(AuthActions.LOGOUT_START),
@@ -101,6 +116,8 @@ export class AuthEffects {
         ofType(AuthActions.LOGOUT_SUCCESS),
         tap(() => {
           window.localStorage.removeItem('accessToken');
+          window.dispatchEvent(new Event('storage'));
+          this.router.navigate(['/']);
         })
       ),
     { dispatch: false }
@@ -113,9 +130,18 @@ export class AuthEffects {
         return this.authService.validateTokens().pipe(
           map(() => new AuthActions.TokenValidationSuccess()),
           catchError((resError: HttpErrorResponse) => {
-            return of(
-              new AuthActions.TokenValidationFailed(resError.statusText)
-            );
+            let error;
+            switch (resError.status) {
+              case 401:
+                error = 'You need to log in';
+                break;
+              case 403:
+                error = 'You need to log in';
+                break;
+              default:
+                error = 'Internal server error';
+            }
+            return of(new AuthActions.TokenValidationFailed(error));
           })
         );
       })
@@ -125,7 +151,9 @@ export class AuthEffects {
   tokenValidationSuccess$: any = createEffect((): any =>
     this.actions$.pipe(
       ofType(AuthActions.TOKEN_VALIDATION_SUCCESS),
-      map((_) => new AuthActions.SetIsLoggedIn(true))
+      map((_) => {
+        return new AuthActions.SetIsLoggedIn(true);
+      })
     )
   );
 
@@ -136,5 +164,9 @@ export class AuthEffects {
     )
   );
 
-  constructor(private actions$: Actions, private authService: AuthService) {}
+  constructor(
+    private actions$: Actions,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 }
